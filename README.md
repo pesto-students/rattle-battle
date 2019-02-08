@@ -1,6 +1,6 @@
-# Rattle Battle
+# Vipers' Rattle Battle
 
-Live action multiplayer snake game.
+Real-time PvP snake game.
 
 Team members:
 
