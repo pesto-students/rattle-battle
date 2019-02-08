@@ -1,0 +1,9 @@
+{
+  "name": "rattle-battle",
+  "version": "1.0.0",
+  "description": "Live Multiplayer Snake Game",
+  "main": "index.js",
+  "repository": "https://github.com/pesto-students/rattle-battle",
+  "author": "Nitin Patel <nitinpatel278@gmail.com>",
+  "license": "MIT"
+}
