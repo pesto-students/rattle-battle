@@ -1,0 +1,22 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "Backend for rattle-battle",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "lint": "npx eslint index.js"
+  },
+  "author": "Jithin Tom <jithintom1@gmail.com>,",
+  "license": "MIT",
+  "private": false,
+  "dependencies": {
+    "express": "^4.16.4"
+  },
+  "devDependencies": {
+    "eslint": "^5.13.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.16.0",
+    "jest": "^24.1.0"
+  }
+}
