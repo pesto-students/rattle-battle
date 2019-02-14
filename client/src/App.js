@@ -1,9 +1,13 @@
-import React, {} from 'react';
-import './App.css';
+import React, { Fragment } from 'react';
 
+import Navbar from './components/Navbar';
+import Home from './components/Home';
 
-function App() {
-  return <h1>Rattle Battle Client</h1>;
-}
+const App = () => (
+  <Fragment>
+    <Navbar />
+    <Home />
+  </Fragment>
+);
 
 export default App;
