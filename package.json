@@ -4,13 +4,15 @@
   "description": "Live Multiplayer Snake Game",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "yarn lint:server && yarn lint:client",
     "lint:client": "cd client && yarn lint",
     "lint:server": "cd server && yarn lint",
     "postinstall": "yarn install:server && yarn install:client",
     "install:server": "cd server && yarn",
-    "install:client": "cd client && yarn"
+    "install:client": "cd client && yarn",
+    "test": "yarn test:server && yarn test:client",
+    "test:client": "cd client && yarn test",
+    "test:server": "cd server && yarn test"
   },
   "repository": "https://github.com/pesto-students/rattle-battle",
   "author": "Nitin Patel <nitinpatel278@gmail.com>",
