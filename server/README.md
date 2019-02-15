@@ -4,7 +4,14 @@ Server for rattle-battle server
 
 In the project directory, you can run:
 
-### `npm start`
+### `yarn`
+
+Install all the dependencies
+
+### `yarn start`
 
 Runs the app in the development mode
 
+### `yarn test`
+
+Runs all the tests
