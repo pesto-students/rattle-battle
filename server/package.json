@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "lint": "npx eslint index.js"
+    "lint": "npx eslint index.js",
+    "test": "jest"
   },
   "author": "Jithin Tom <jithintom1@gmail.com>,",
   "license": "MIT",
