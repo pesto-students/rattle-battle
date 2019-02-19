@@ -1,0 +1,13 @@
+const SNAKE_CONSTANTS = {
+  ARC_RADIUS: 5,
+  INITIAL_LENGTH: 30,
+  LIFE: 30,
+  FOOD_LENGTH_REWARD: 15,
+  FOOD_LIFE_REWARD: 5,
+  GAME_BOARD: {
+    WIDTH: 700,
+    HEIGHT: 700,
+  },
+};
+
+export default SNAKE_CONSTANTS;
