@@ -1,5 +1,6 @@
 
 import app from './app/app';
+import './database/connection';
 
 const { PORT = 4000 } = process.env;
 

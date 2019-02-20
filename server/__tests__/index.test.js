@@ -1,18 +1,17 @@
 
 import request from 'supertest';
-import server from '../src/index';
+import app from '../src/app/app';
 
+const { TEST_PORT = 8888 } = process.env;
 
 describe('Server responds correctly to requests', () => {
   let testServer;
 
-  beforeEach(() => {
-    testServer = server;
+  beforeEach((done) => {
+    testServer = app.listen(TEST_PORT, done);
   });
 
-  afterEach(() => {
-    testServer.close();
-  });
+  afterEach(done => testServer.close(done));
 
   it('should respond to GET `/ping`', (done) => {
     request(testServer)
