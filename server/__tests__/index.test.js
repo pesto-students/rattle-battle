@@ -1,5 +1,5 @@
 const request = require('supertest');
-const server = require('../index');
+const server = require('../src/index');
 
 describe('Server responds correctly to requests', () => {
   let testServer;
