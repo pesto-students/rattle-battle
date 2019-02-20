@@ -4,24 +4,29 @@
   "description": "Backend for rattle-battle",
   "main": "index.js",
   "scripts": {
-    "start": "node src/index.js",
-    "start:dev": "nodemon src",
-    "lint": "npx eslint src/index.js",
+    "start": "babel-node src",
+    "start:dev": "nodemon --exec babel-node src",
+    "lint": "npx eslint src",
     "test": "jest"
   },
   "author": "Jithin Tom <jithintom1@gmail.com>,",
   "license": "MIT",
   "private": false,
   "dependencies": {
+    "@babel/polyfill": "^7.2.5",
     "body-parser": "^1.18.3",
     "dotenv": "^6.2.0",
     "express": "^4.16.4"
   },
   "devDependencies": {
+    "@babel/core": "^7.3.3",
+    "@babel/node": "^7.2.2",
+    "@babel/preset-env": "^7.3.1",
     "eslint": "^5.13.0",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.16.0",
     "jest": "^24.1.0",
+    "nodemon": "^1.18.10",
     "supertest": "^3.4.2"
   }
 }

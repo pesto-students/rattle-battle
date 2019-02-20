@@ -1,5 +1,5 @@
 
-const app = require('./app/app');
+import app from './app/app';
 
 const { PORT = 4000 } = process.env;
 
@@ -8,4 +8,4 @@ const server = app.listen(PORT, () => {
   console.log(`Server Listening on port ${PORT}`);
 });
 
-module.exports = server;
+export default server;
