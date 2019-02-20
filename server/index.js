@@ -1,10 +1,13 @@
-const express = require('express');
+const app = require('./app/app');
 
-const PORT = process.env.PORT || 4000;
+const { PORT = 4000 } = process.env;
 
-const app = express();
+// initialize database connection
+require('./database/connection');
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   // eslint-disable-next-line no-console
   console.log(`Server Listening on port ${PORT}`);
 });
+
+module.exports = server;
