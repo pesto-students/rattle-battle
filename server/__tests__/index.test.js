@@ -1,5 +1,7 @@
-const request = require('supertest');
-const server = require('../src/index');
+
+import request from 'supertest';
+import server from '../src/index';
+
 
 describe('Server responds correctly to requests', () => {
   let testServer;
@@ -12,7 +14,7 @@ describe('Server responds correctly to requests', () => {
     testServer.close();
   });
 
-  test('should respond to GET `/ping`', (done) => {
+  it('should respond to GET `/ping`', (done) => {
     request(testServer)
       .get('/ping')
       .then((response) => {
@@ -22,7 +24,7 @@ describe('Server responds correctly to requests', () => {
       });
   });
 
-  test('should respond with 404 for unknown routes', async (done) => {
+  it('should respond with 404 for unknown routes', async (done) => {
     const randomRoute = () => `/abc${(Math.random() * 10000).toFixed(0)}`;
 
     await request(testServer)
