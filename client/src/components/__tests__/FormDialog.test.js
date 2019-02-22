@@ -36,20 +36,15 @@ describe('<FormDialog />', () => {
   });
 
   test('should contain cancel and submit button', () => {
-    const buttons = wrapper.find('button');
-    expect(
-      buttons
-        .at(0)
-        .text()
-        .toLowerCase(),
-    ).toContain('cancel');
-
-    expect(buttons.at(1).contains(props.title)).toBe(true);
-    expect(buttons.at(1).props().type).toBe('submit');
+    const cancelBtn = wrapper.find('button[data-test="cancel"]');
+    expect(cancelBtn.text().toLowerCase()).toContain('cancel');
+    const submitBtn = wrapper.find('button[data-test="submit"]');
+    expect(submitBtn.contains(props.title)).toBe(true);
+    expect(submitBtn.props().type).toBe('submit');
   });
 
   test('should close modal by calling toggleModal on clicking cancel button', () => {
-    const cancelBtn = wrapper.find('button').at(0);
+    const cancelBtn = wrapper.find('button[data-test="cancel"]');
     cancelBtn.simulate('click');
 
     expect(props.closeModal).toHaveBeenCalled();
