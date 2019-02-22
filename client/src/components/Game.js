@@ -33,14 +33,9 @@ export default class Game extends Component {
   };
 
   handleKeyDown = (event) => {
-    //     left arrow: 37 
-    // up arrow: 38
-    // right arrow: 39
-    // down arrow: 40
     const keyNumber = event.keyCode;
-    const key = event.key;
+    const { key } = event;
     if ([37, 38, 39, 40].find(number => number === keyNumber)) {
-      console.log('Yes we are pressing key', key);
       this.socket.emit('keyPress', { player: 1, key });
     }
     if (this.gameIsRunning()) {
@@ -48,14 +43,28 @@ export default class Game extends Component {
     }
   };
 
-  stepChange(coordinates) {
+  stepChange(game) {
+    console.log('game', game);
+    const coordinates = game.snakeBodies;
+    const { food } = game;
+    const { ctx } = this;
     this.ctx.drawImage(this.img, 0, 0, 1400, 700);
-    coordinates.forEach((position, index) => {
-      this.ctx.beginPath();
-      this.ctx.fillStyle = 'black';// now anthing that will be drown on the canvas will be of this color.
-      this.ctx.arc(position.x, position.y, 5, 0, 2 * Math.PI);
-      this.ctx.fill();
-      this.ctx.closePath();
+    // const tildValue = 5;
+    // const reverse = false; // TODO: Implement something that snake moves like a real snake, crawling.
+    // draw food 
+    ctx.beginPath();
+    ctx.fillStyle = 'yellow';
+    ctx.strokeStyle = 'yellow';
+    // food radius 6
+    ctx.arc(food.x, food.y, 6, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.closePath();
+    coordinates.forEach((position) => {
+      ctx.beginPath();
+      ctx.fillStyle = 'black';// now anthing that will be drown on the canvas will be of this color.
+      ctx.arc(position.x, position.y, 5, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.closePath();
     });
   }
 
