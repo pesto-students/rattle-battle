@@ -4,6 +4,7 @@ import Button from '@material-ui/core/Button';
 import Icon from '@material-ui/core/Icon';
 import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core/styles';
+import Game from './Game';
 
 const styles = theme => ({
   button: { margin: theme.spacing.unit },
@@ -19,6 +20,7 @@ const Home = ({ classes }) => (
     <Button className={classes.button} variant="contained" color="secondary" size="large">
       Find a Friend
     </Button>
+    <Game />
   </Grid>
 );
 
