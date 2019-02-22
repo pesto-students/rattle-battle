@@ -1,13 +1,26 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, Component } from 'react';
 
 import Navbar from './components/Navbar';
 import Home from './components/Home';
 
-const App = () => (
-  <Fragment>
-    <Navbar />
-    <Home />
-  </Fragment>
-);
+class App extends Component {
+  state = {
+    loggedInUser: null,
+  };
+
+  componentDidMount() {
+    // get logged in user
+  }
+
+  render() {
+    const { loggedInUser } = this.state;
+    return (
+      <Fragment>
+        <Navbar loggedInUser={loggedInUser} />
+        <Home />
+      </Fragment>
+    );
+  }
+}
 
 export default App;
