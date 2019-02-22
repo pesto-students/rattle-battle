@@ -1,19 +1,8 @@
-
 import request from 'supertest';
-import server from '../src/index';
 
+const { testServer } = global;
 
 describe('Server responds correctly to requests', () => {
-  let testServer;
-
-  beforeEach(() => {
-    testServer = server;
-  });
-
-  afterEach(() => {
-    testServer.close();
-  });
-
   it('should respond to GET `/ping`', (done) => {
     request(testServer)
       .get('/ping')

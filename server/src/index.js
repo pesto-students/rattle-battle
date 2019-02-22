@@ -1,7 +1,6 @@
-
 import app from './app/app';
-
-const { PORT = 4000 } = process.env;
+import './database/connection';
+import { PORT } from './app/appConstants';
 
 const server = app.listen(PORT, () => {
   // eslint-disable-next-line no-console
