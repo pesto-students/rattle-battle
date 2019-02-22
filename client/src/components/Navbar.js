@@ -7,6 +7,7 @@ import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 import SignupModal from './SignupModal';
 import AuthButtons from './AuthButtons';
+import LoginModal from './LoginModal';
 
 const styles = () => ({
   root: {
@@ -26,7 +27,7 @@ class Navbar extends Component {
 
   render() {
     const { classes, loggedInUser } = this.props;
-    const { showSignupModal } = this.state;
+    const { showSignupModal, showLoginModal } = this.state;
 
     return (
       <div className={classes.root}>
@@ -46,6 +47,7 @@ class Navbar extends Component {
           </Toolbar>
         </AppBar>
         <SignupModal show={showSignupModal} toggleModal={this.toggleModal} />
+        <LoginModal show={showLoginModal} toggleModal={this.toggleModal} />
       </div>
     );
   }

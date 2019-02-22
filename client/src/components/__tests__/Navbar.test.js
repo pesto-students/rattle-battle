@@ -52,4 +52,14 @@ describe('<Navbar />', () => {
     signupBtn.simulate('click');
     expect(wrapper.find('SignupModal').props().show).toBe(true);
   });
+
+  test('should show <LoginModal /> form after clicking login button', () => {
+    const wrapper = mount(<Navbar loggedInUser={null} />);
+    const buttons = wrapper.find('button');
+    const loginbtn = buttons.at(1);
+    expect(wrapper.find('LoginModal').length).toBe(1);
+    expect(wrapper.find('LoginModal').props().show).toBe(false);
+    loginbtn.simulate('click');
+    expect(wrapper.find('LoginModal').props().show).toBe(true);
+  });
 });

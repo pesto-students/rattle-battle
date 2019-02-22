@@ -14,10 +14,10 @@ const FormDialog = ({
       <DialogTitle id="form-dialog-title">{title}</DialogTitle>
       <DialogContent>{children}</DialogContent>
       <DialogActions>
-        <Button onClick={closeModal} color="primary">
+        <Button onClick={closeModal} color="primary" data-test="cancel">
           Cancel
         </Button>
-        <Button color="primary" type="submit">
+        <Button color="primary" type="submit" data-test="submit">
           {title}
         </Button>
       </DialogActions>
