@@ -7,16 +7,23 @@
     "start": "babel-node src",
     "start:dev": "nodemon --exec babel-node src",
     "lint": "npx eslint src",
-    "test": "jest"
+    "test": "jest --runInBand"
   },
   "author": "Jithin Tom <jithintom1@gmail.com>,",
   "license": "MIT",
   "private": false,
   "dependencies": {
     "@babel/polyfill": "^7.2.5",
+    "bcrypt": "^3.0.4",
     "body-parser": "^1.18.3",
+    "chai": "^4.2.0",
     "dotenv": "^6.2.0",
-    "express": "^4.16.4"
+    "esm": "^3.2.5",
+    "express": "^4.16.4",
+    "express-validator": "^5.3.1",
+    "jsonwebtoken": "^8.5.0",
+    "mockgoose": "^8.0.1",
+    "mongoose": "^5.4.14"
   },
   "devDependencies": {
     "@babel/core": "^7.3.3",
@@ -26,6 +33,7 @@
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.16.0",
     "jest": "^24.1.0",
+    "jest-environment-node": "^24.0.0",
     "nodemon": "^1.18.10",
     "supertest": "^3.4.2"
   }
