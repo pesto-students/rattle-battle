@@ -1,9 +1,9 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import mongoose from 'mongoose';
+import { Schema, model } from 'mongoose';
 import { JWT_SECRET } from '../../app/appConstants';
 
-const userSchema = mongoose.Schema({
+const userSchema = new Schema({
   email: {
     type: String,
     required: true,
@@ -66,6 +66,6 @@ userSchema.methods.hashPassword = async function hashPassword() {
   return user;
 };
 
-const User = mongoose.model('User', userSchema);
+const User = model('User', userSchema);
 
 export default User;
