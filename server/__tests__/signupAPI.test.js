@@ -61,7 +61,7 @@ describe('Sign-Up API', () => {
     request(testServer)
       .post('/api/signup')
       .send(mockUser)
-      .expect(409)
+      .expect(422)
       .end((err, res) => {
         expect(res.body).to.have.key('errors');
         done(err);
