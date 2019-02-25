@@ -29,6 +29,8 @@ const testAxiosRejection = async (apiFunction) => {
   test('should return error message if request fails', async () => {
     Axios.mockRejectedValueOnce(AxiosRejectedValue);
     await expect(apiFunction()).rejects.toEqual({ error: 'go away' });
+    Axios.mockRejectedValueOnce('unknown error');
+    await expect(apiFunction()).rejects.toEqual('unknown error');
   });
 };
 

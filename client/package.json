@@ -5,6 +5,7 @@
   "dependencies": {
     "@material-ui/core": "^3.9.2",
     "axios": "^0.18.0",
+    "jsonwebtoken": "^8.5.0",
     "prop-types": "^15.7.2",
     "qs": "^6.6.0",
     "react": "^16.8.1",
@@ -35,6 +36,7 @@
     "eslint-config-airbnb": "^17.1.0",
     "eslint-plugin-import": "^2.16.0",
     "eslint-plugin-jsx-a11y": "^6.2.1",
-    "eslint-plugin-react": "^7.12.4"
+    "eslint-plugin-react": "^7.12.4",
+    "jest-localstorage-mock": "^2.4.0"
   }
 }

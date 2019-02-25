@@ -8,7 +8,11 @@ Axios.defaults.paramsSerializer = params => queryParams.stringify(params);
 const fetchAPI = options => new Promise((resolve, reject) => {
   Axios(options)
     .then(resolve)
-    .catch(error => reject(error.response.data));
+    .catch((error) => {
+      if (typeof error.response !== 'undefined') {
+        reject(error.response.data);
+      } else reject(error);
+    });
 });
 
 const buildRequest = method => url => options => fetchAPI({ method, url, ...options });
