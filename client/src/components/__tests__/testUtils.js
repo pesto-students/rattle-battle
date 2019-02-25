@@ -1,4 +1,6 @@
-/* eslint-disable import/prefer-default-export */
+import React from 'react';
+import UserContext from '../../utils/user-context';
+
 export const testInputFieldsIn = (
   wrapper,
   index,
@@ -13,3 +15,8 @@ export const testInputFieldsIn = (
   expect(labelText).toContain(expectedLabel);
   expect(onChange).toBeInstanceOf(Function);
 };
+
+/* eslint-disable react/prop-types  */
+export const MockUserProvider = ({ children, ...otherProps }) => (
+  <UserContext.Provider value={otherProps}>{children}</UserContext.Provider>
+);

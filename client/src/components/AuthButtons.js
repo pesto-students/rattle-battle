@@ -1,21 +1,14 @@
-import React, { Fragment } from 'react';
-import PropTypes from 'prop-types';
+import React, { useContext } from 'react';
+import UserContext from '../utils/user-context';
+import LogoutButton from './LogoutButton';
+import SignupAndLoginButtons from './SignupAndLoginButtons';
 
-import Button from '@material-ui/core/Button';
-
-const AuthButtons = ({ toggleModal }) => (
-  <Fragment>
-    <Button color="inherit" onClick={() => toggleModal('showSignupModal')}>
-      Signup
-    </Button>
-    <Button color="inherit" onClick={() => toggleModal('showLoginModal')}>
-      Login
-    </Button>
-  </Fragment>
-);
-
-AuthButtons.propTypes = {
-  toggleModal: PropTypes.func.isRequired,
+const AuthButtons = () => {
+  const { user, logout } = useContext(UserContext);
+  if (user) {
+    return <LogoutButton user={user} logout={logout} />;
+  }
+  return <SignupAndLoginButtons />;
 };
 
 export default AuthButtons;

@@ -5,17 +5,13 @@ import CheckBoxWithLabel from './CheckBoxWithLabel';
 import useLoginForm from '../customHooks/useLoginForm';
 import RequiredFormTextField from './RequiredFormTextField';
 
-const LoginModal = ({ toggleModal, show }) => {
-  const closeLoginModal = () => toggleModal('showLoginModal');
-
+const LoginModal = ({ closeModal, show }) => {
   const {
     emailState, passwordState, rememberMeState, handleSubmit,
-  } = useLoginForm(
-    closeLoginModal,
-  );
+  } = useLoginForm(closeModal);
 
   return (
-    <FormDialog title="Login" show={show} closeModal={closeLoginModal} handleSubmit={handleSubmit}>
+    <FormDialog title="Login" show={show} closeModal={closeModal} handleSubmit={handleSubmit}>
       <RequiredFormTextField name="email" type="email" label="Email" autoFocus {...emailState} />
       <RequiredFormTextField name="password" type="password" label="Password" {...passwordState} />
       <CheckBoxWithLabel label="Remember Me" name="remember-me" {...rememberMeState} />
@@ -25,7 +21,7 @@ const LoginModal = ({ toggleModal, show }) => {
 
 LoginModal.propTypes = {
   show: PropTypes.bool.isRequired,
-  toggleModal: PropTypes.func.isRequired,
+  closeModal: PropTypes.func.isRequired,
 };
 
 export default LoginModal;

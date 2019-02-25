@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
+import Typography from '@material-ui/core/Typography';
 import FormDialog from './FormDialog';
 import useSignupForm from '../customHooks/useSignupForm';
 import RequiredFormTextField from './RequiredFormTextField';
 
-const SignupModal = ({ toggleModal, show }) => {
-  const closeSignupModal = () => toggleModal('showSignupModal');
+import UserContext from '../utils/user-context';
+
+const SignupModal = ({ closeModal, show }) => {
+  const { login: callbackForSignupSuccess } = useContext(UserContext);
 
   const {
     emailState,
@@ -13,15 +16,12 @@ const SignupModal = ({ toggleModal, show }) => {
     passwordState,
     repeatPasswordState,
     handleSubmit,
-  } = useSignupForm(closeSignupModal);
+    formError,
+  } = useSignupForm(callbackForSignupSuccess);
 
   return (
-    <FormDialog
-      title="Sign Up"
-      show={show}
-      closeModal={closeSignupModal}
-      handleSubmit={handleSubmit}
-    >
+    <FormDialog title="Sign Up" show={show} closeModal={closeModal} handleSubmit={handleSubmit}>
+      <Typography color="error">{formError}</Typography>
       <RequiredFormTextField name="email" type="email" label="Email" autoFocus {...emailState} />
       <RequiredFormTextField name="username" type="text" label="Username" {...usernameState} />
       <RequiredFormTextField name="password" type="password" label="Password" {...passwordState} />
@@ -37,7 +37,7 @@ const SignupModal = ({ toggleModal, show }) => {
 
 SignupModal.propTypes = {
   show: PropTypes.bool.isRequired,
-  toggleModal: PropTypes.func.isRequired,
+  closeModal: PropTypes.func.isRequired,
 };
 
 export default SignupModal;
