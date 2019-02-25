@@ -16,9 +16,6 @@ const createNewUser = async (req, res) => {
     res.set('X-Auth-Token', token);
     return res.send(newUser);
   } catch (err) {
-    if (err.code === 11000) {
-      return res.status(409).send({ errors: 'Username/E-Mail is taken.' });
-    }
     return res.status(500).send({ errors: 'Something went wrong while signing up.' });
   }
 };
