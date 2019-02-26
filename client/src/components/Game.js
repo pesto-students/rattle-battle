@@ -3,21 +3,36 @@ import io from '../config/socketIO';
 import grass from '../grass.jpg';
 
 export default class Game extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      playerId: null,
+    };
+    this.playGame = this.playGame.bind(this);
+    this.startNewGame = this.startNewGame.bind(this);
+  }
+
   componentDidMount() {
     this.img = document.getElementById('grass');
     this.ctx = this.canvas.getContext('2d');
     this.gameState = null;
     const socket = io.connect('http://localhost:4000');
     this.socket = socket;
-    socket.emit('connection', (what) => {
-      console.log(what);
+    // socket.emit('connection', (what) => {
+    //   console.log(what);
+    // });
+    socket.on('assignPlayerId', (playerId) => {
+      this.state.playerId = playerId;
+      console.log('the playerId', playerId);
     });
 
-    socket.emit('send_direction', 'nothing');
+    socket.on('stepChange', (game) => {
+      console.log('I am receiving this fucking thing.');
+      this.stepChange(game);
+    });
 
-    socket.on('stepChange', this.stepChange.bind(this));
     // TODO replace this with requestAnimationFrame to avoid layout thrashin
-    setInterval(this.drawFrame, 16.66);
+    // setInterval(this.drawFrame, 16.66);
   }
 
   gameIsRunning = () => this.gameState && !this.gameState.ended;
@@ -36,7 +51,7 @@ export default class Game extends Component {
     const keyNumber = event.keyCode;
     const { key } = event;
     if ([37, 38, 39, 40].find(number => number === keyNumber)) {
-      this.socket.emit('keyPress', { player: 1, key });
+      this.socket.emit('keyPress', { player: this.state.playerId, key });
     }
     if (this.gameIsRunning()) {
       // send key press event to server
@@ -68,17 +83,27 @@ export default class Game extends Component {
     });
   }
 
+  playGame() {
+    this.socket.emit('joinGame', 'nothing');
+  }
+
+  startNewGame() {
+    this.socket.emit('newGame', 'nothing');
+  }
+
   render() {
     return (
       <React.Fragment>
         <img src={grass} id="grass" style={{ display: 'none' }} alt="grass" />
         <canvas
           ref={(canvas) => { this.canvas = canvas; }}
-          width="1400"
-          height="700"
+          width="600"
+          height="600"
           tabIndex="0"
           onKeyDown={this.handleKeyDown}
         />
+        <button onClick={this.playGame}>Join Game</button>
+        <button onClick={this.startNewGame}>start New Game</button>
       </React.Fragment>
     );
   }
