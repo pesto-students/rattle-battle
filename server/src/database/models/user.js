@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { Schema, model } from 'mongoose';
-import { JWT_SECRET } from '../../app/appConstants';
+import { JWT_SECRET, JWT_DURATION } from '../../app/appConstants';
 
 const userSchema = new Schema({
   email: {
@@ -51,6 +51,9 @@ userSchema.methods.generateAuthToken = function generateAuthToken() {
       access,
     },
     JWT_SECRET,
+    {
+      expiresIn: JWT_DURATION,
+    },
   );
   return token;
 };
