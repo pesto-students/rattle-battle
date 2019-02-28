@@ -1,28 +1,36 @@
+import { useState } from 'react';
 import useFormTextField from './useFormTextField';
 import useCheckBox from './useCheckBox';
+import { loginAPI } from '../utils/auth-api';
+import handleSuccess from './handleFormSuccess';
+import handleErrors from './handleFormErrors';
 
-export default (done) => {
+export default (successCallback) => {
   const initialState = { error: false, errorMsg: '', value: '' };
 
-  const [emailState] = useFormTextField(initialState);
-  const [passwordState] = useFormTextField(initialState);
+  const [emailState, setEmailError] = useFormTextField(initialState);
+  const [passwordState, setPasswordError] = useFormTextField(initialState);
   const [rememberMeState] = useCheckBox(true);
+  const [formError, setFormError] = useState('');
+
+  const setError = {
+    email: setEmailError,
+    password: setPasswordError,
+    form: setFormError,
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
 
     const { value: email } = emailState;
     const { value: password } = passwordState;
-    const { checked: rememberMe } = rememberMeState;
 
-    //  eslint-disable-next-line
-    console.log({
-      email,
-      password,
-      rememberMe,
-    });
+    const user = { email, password };
 
-    done();
+    return loginAPI(user)
+      .then(handleSuccess)
+      .then(successCallback)
+      .catch(err => handleErrors(err, setError));
   };
 
   return {
@@ -30,5 +38,6 @@ export default (done) => {
     passwordState,
     rememberMeState,
     handleSubmit,
+    formError,
   };
 };

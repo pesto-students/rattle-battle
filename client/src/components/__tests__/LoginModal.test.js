@@ -4,6 +4,11 @@ import { mount } from 'enzyme';
 import LoginModal from '../LoginModal';
 
 import { testInputFieldsIn } from './testUtils';
+import { loginAPI } from '../../utils/auth-api';
+import handleSuccess from '../../customHooks/handleFormSuccess';
+
+jest.mock('../../utils/auth-api');
+jest.mock('../../customHooks/handleFormSuccess');
 
 describe('<LoginModal /> form', () => {
   const closeModal = jest.fn();
@@ -71,5 +76,31 @@ describe('<LoginModal /> contains cancel and submit button', () => {
     const cancelBtn = wrapper.find('button[data-test="cancel"]');
     cancelBtn.simulate('click');
     expect(closeModal).toHaveBeenCalled();
+  });
+});
+
+describe('<LoginModal/> form submission', () => {
+  test('should call loginAPI on form submission', () => {
+    const closeModal = jest.fn();
+    const wrapper = mount(<LoginModal show closeModal={closeModal} />);
+    const mockUser = {
+      email: 'nitin@mail.com',
+      password: '123456',
+    };
+
+    loginAPI.mockImplementation(user => Promise.resolve(user));
+
+    const emailInpt = wrapper.find('input[name="email"]');
+    const passwordInpt = wrapper.find('input[name="password"]');
+
+    emailInpt.simulate('change', { target: { value: mockUser.email } });
+    passwordInpt.simulate('change', { target: { value: mockUser.password } });
+
+    wrapper.find('form').simulate('submit');
+
+    return Promise.resolve().then(() => {
+      expect(loginAPI).toHaveBeenCalledWith(mockUser);
+      expect(handleSuccess).toHaveBeenCalledWith(mockUser);
+    });
   });
 });

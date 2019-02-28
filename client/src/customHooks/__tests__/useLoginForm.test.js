@@ -1,14 +1,21 @@
 import { act } from 'react-dom/test-utils';
 import { testHook } from './testUtils';
 import useLoginForm from '../useLoginForm';
+import { loginAPI } from '../../utils/auth-api';
+import handleSuccess from '../handleFormSuccess';
+import handleErrors from '../handleFormErrors';
 
-let done;
+let callbackForSuccess;
 let formState;
 
+jest.mock('../../utils/auth-api');
+jest.mock('../handleFormSuccess');
+jest.mock('../handleFormErrors');
+
 beforeEach(() => {
-  done = jest.fn();
+  callbackForSuccess = jest.fn();
   /* eslint-disable no-return-assign */
-  testHook(() => (formState = useLoginForm(done)));
+  testHook(() => (formState = useLoginForm(callbackForSuccess)));
 });
 
 const expectedTextFieldState = { error: false, helperText: '', value: '' };
@@ -51,7 +58,8 @@ describe('useLoginForm hook', () => {
 });
 
 describe('handleSubmit on useLoginForm hook', () => {
-  test('should call passed `done` function on `handleSubmit` if formdata is correct', () => {
+  test('should call login API on `handleSubmit` if formdata is correct', () => {
+    loginAPI.mockResolvedValue({ data: 'serverresponsedata', headers: { 'x-auth-token': '123' } });
     const email = 'nitin@nitin.com';
     const password = '1234';
     const event = { preventDefault: jest.fn() };
@@ -66,6 +74,47 @@ describe('handleSubmit on useLoginForm hook', () => {
     });
 
     expect(event.preventDefault).toHaveBeenCalled();
-    expect(done).toHaveBeenCalled();
+    return Promise.resolve().then(() => {
+      expect(loginAPI).toHaveBeenCalledWith({ email, password });
+    });
+  });
+
+  test('should call handleSuccess and successCallback if login was successful', (done) => {
+    loginAPI.mockResolvedValue({
+      data: 'serverresponsedata',
+      headers: { 'x-auth-token': '123' },
+    });
+
+    handleSuccess.mockImplementation(response => response.data);
+
+    act(() => {
+      formState.handleSubmit({ preventDefault: jest.fn() }).then(() => {
+        expect(handleSuccess).toHaveBeenCalledWith({
+          data: 'serverresponsedata',
+          headers: { 'x-auth-token': '123' },
+        });
+
+        expect(callbackForSuccess).toHaveBeenCalledWith('serverresponsedata');
+        done();
+      });
+    });
+  });
+
+  test('should call handleErrors if login failed', (done) => {
+    loginAPI.mockRejectedValue({ errors: 'error' });
+
+    act(() => {
+      formState.handleSubmit({ preventDefault: jest.fn() }).then(() => {
+        expect(handleErrors).toHaveBeenCalledWith(
+          { errors: 'error' },
+          {
+            form: expect.any(Function),
+            email: expect.any(Function),
+            password: expect.any(Function),
+          },
+        );
+        done();
+      });
+    });
   });
 });
