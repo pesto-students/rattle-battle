@@ -1,16 +1,16 @@
 import { body } from 'express-validator/check';
-import { checkUserExists } from '../utils/validateUtils';
+import { checkUniqueUser } from '../utils/validateUtils';
 
 const signupValidator = [
   body('email')
     .isEmail()
     .withMessage('must be a valid email')
-    .custom(email => checkUserExists({ email }))
+    .custom(email => checkUniqueUser({ email }))
     .withMessage('is already taken'),
   body('username')
     .isLength({ min: 3 })
     .withMessage('must have at least 3 characters')
-    .custom(username => checkUserExists({ username }))
+    .custom(username => checkUniqueUser({ username }))
     .withMessage('is already taken'),
   body('password')
     .isLength({ min: 6 })
