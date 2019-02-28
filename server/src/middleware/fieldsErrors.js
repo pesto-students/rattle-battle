@@ -1,6 +1,6 @@
 import { validationResult } from 'express-validator/check';
 
-const userFieldsErrors = (req, res, next) => {
+const fieldsErrors = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(422).json({ errors: errors.array() });
@@ -8,4 +8,4 @@ const userFieldsErrors = (req, res, next) => {
   return next();
 };
 
-export default userFieldsErrors;
+export default fieldsErrors;

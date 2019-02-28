@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
 import { Schema, model } from 'mongoose';
-import { JWT_SECRET, JWT_DURATION } from '../../app/appConstants';
+import { generateJWT } from '../../utils/encryptUtils';
+import { modelToJSON } from '../../utils/databaseUtils';
 
 const userSchema = new Schema({
   email: {
@@ -28,12 +28,7 @@ const userSchema = new Schema({
  * @returns Object with user ID and username
  */
 userSchema.methods.toJSON = function toJSON() {
-  const user = this;
-  const { id, username } = user;
-  return {
-    id,
-    username,
-  };
+  return modelToJSON(this, ['id', 'username']);
 };
 
 /**
@@ -44,17 +39,11 @@ userSchema.methods.generateAuthToken = function generateAuthToken() {
   const user = this;
   const access = 'auth';
   const { id, username } = user;
-  const token = jwt.sign(
-    {
-      id,
-      username,
-      access,
-    },
-    JWT_SECRET,
-    {
-      expiresIn: JWT_DURATION,
-    },
-  );
+  const token = generateJWT({
+    id,
+    username,
+    access,
+  });
   return token;
 };
 
