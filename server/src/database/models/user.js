@@ -21,6 +21,10 @@ const userSchema = new Schema({
     required: true,
     minlength: 6,
   },
+  onlineStatus: {
+    type: Boolean,
+    default: true, // intial value because presumably the user is online when entry is created
+  },
 });
 
 /**
@@ -57,6 +61,15 @@ userSchema.methods.hashPassword = async function hashPassword() {
   user.password = hashedPassword;
   return user;
 };
+
+// eslint-disable-next-line func-names
+const setOnlineStatus = onlineStatus => function (user) {
+  return this.findOneAndUpdate(user, { $set: { onlineStatus } });
+};
+
+userSchema.statics.setOnline = setOnlineStatus(true);
+
+userSchema.statics.setOffline = setOnlineStatus(false);
 
 const User = model('User', userSchema);
 
