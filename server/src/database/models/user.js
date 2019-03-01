@@ -21,6 +21,10 @@ const userSchema = new Schema({
     required: true,
     minlength: 6,
   },
+  onlineStatus: {
+    type: Boolean,
+    default: true, // intial value because presumably the user is online when entry is created
+  },
 });
 
 /**
@@ -55,6 +59,16 @@ userSchema.methods.hashPassword = async function hashPassword() {
   const user = this;
   const hashedPassword = await bcrypt.hash(user.password, 14);
   user.password = hashedPassword;
+  return user;
+};
+
+/**
+ * toggles the users online status from false to true.
+ * @returns User model
+ */
+userSchema.methods.toggleOnlineStatus = function toggleOnlineStatus() {
+  const user = this;
+  user.onlineStatus = !user.onlineStatus;
   return user;
 };
 
