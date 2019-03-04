@@ -5,6 +5,7 @@ import { decode } from 'jsonwebtoken';
 import Navbar from './components/Navbar';
 import Home from './components/Home';
 import GameBoardComponent from './components/gameBoardComponent/gameBoardComponent';
+import FriendListComponent from './components/FriendListComponent/FriendListComponent';
 import UserContext from './utils/user-context';
 
 class App extends Component {
@@ -54,6 +55,7 @@ class App extends Component {
           <div>
             <Route exact path="/" component={Home} />
             <Route exact path="/game" component={GameBoardComponent} />
+            <Route exact path="/friends" component={FriendListComponent} />
           </div>
         </Router>
       </UserContext.Provider>

@@ -1,0 +1,52 @@
+.Container{
+  width:fit-content;
+  margin:auto;
+  margin-top: 100px;
+  background: #f8f8ff;
+  padding: 8px;
+}
+
+.Search {
+  width: 500px;
+  height: 24px;
+  font-size: 18px;
+}
+
+.Player-container {
+  padding: 20px 8px 20px 8px;
+}
+.Player {
+  display: flex;
+  justify-content: space-between;
+  margin: 8px 0px 8px 0px;
+  padding: 4px;
+  /* background: #DDDDDD; */
+}
+.Player-status {
+  height: 15px;
+  width: 15px;
+  float:left;
+  border-radius: 50%;
+}
+
+.Online{
+  background: green;
+}
+
+.Offline{
+  background: black;
+  
+}
+
+.Disable-link{
+  pointer-events: none;
+  cursor: default;
+  color: black;
+}
+
+.Find-button{
+  height: 30px;
+  font-size: 18px;
+  background-color: #009ACD;
+  border-radius: 20%;
+}

@@ -22,9 +22,10 @@ class Home extends Component {
       isLoading: false,
       loaderMessage: 'waiting for another player to join..',
       shouldRedirectToGame: false,
+      shouldRedirectToFriends: false,
     };
     this.playGame = this.playGame.bind(this);
-    this.redirectToGame = this.redirectToGame.bind(this);
+    this.redirectToFriendsPage = this.redirectToFriendsPage.bind(this);
     this.getCurrentView = this.getCurrentView.bind(this);
   }
 
@@ -56,7 +57,7 @@ class Home extends Component {
             Play
             <Icon className={classes.rightIcon}>send</Icon>
           </Button>
-          <Button className={classes.button} variant="contained" color="secondary" size="large">
+          <Button className={classes.button} onClick={this.redirectToFriendsPage} variant="contained" color="secondary" size="large">
             Find a Friend
           </Button>
         </Grid>
@@ -75,15 +76,19 @@ class Home extends Component {
     });
   }
 
-  redirectToGame() {
-    const { playerId } = this.state;
-    return <Redirect to={{ pathname: '/game', playerInfo: { playerId, socket } }} />;
+  // eslint-disable-next-line class-methods-use-this
+  redirectToFriendsPage() {
+    this.setState({ shouldRedirectToFriends: true });
   }
 
   render() {
-    const { shouldRedirectToGame } = this.state;
+    const { shouldRedirectToGame, shouldRedirectToFriends } = this.state;
     if (shouldRedirectToGame) {
-      return this.redirectToGame();
+      const { playerId } = this.state;
+      return <Redirect to={{ pathname: '/game', playerInfo: { playerId, socket } }} />;
+    }
+    if (shouldRedirectToFriends) {
+      return <Redirect to={{ pathname: '/friends' }} />;
     }
     return (
       <React.Fragment>
