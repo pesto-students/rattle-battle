@@ -7,8 +7,6 @@ describe('Test Snake Class', () => {
   const initialProperty = {
     head: { x: 200, y: 200 },
     direction: 'down',
-    velocity: 2,
-    color: 'black',
     length: SNAKE_CONSTANTS.INITIAL_LENGTH,
   };
   const game = {
@@ -32,13 +30,11 @@ describe('Test Snake Class', () => {
       expect(snake.head.x).toEqual(initialProperty.head.x);
       expect(snake.head.y).toEqual(initialProperty.head.y + initialProperty.length * 2);
       expect(snake.direction).toEqual(initialProperty.direction);
-      expect(snake.velocity).toEqual(initialProperty.velocity);
-      expect(snake.color).toEqual(initialProperty.color);
       expect(snake.length).toEqual(initialProperty.length);
       expect(snake.rivalBody).toEqual(game.rivalBody);
       expect(snake.interval).toEqual(game.intervalNumber);
       expect(snake.xAxisVelocity).toEqual(0);
-      expect(snake.yAxisVelocity).toEqual(initialProperty.velocity);
+      expect(snake.yAxisVelocity).toEqual(SNAKE_CONSTANTS.INITIAL_VELOCITY);
     });
 
     it('should have a snake\'s initial populated body(bodyCoordinate array length) with given initial length', () => {

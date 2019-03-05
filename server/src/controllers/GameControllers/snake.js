@@ -1,4 +1,5 @@
 import SNAKE_CONSTANTS from './gameConstants';
+import { isPointInBody } from './utility';
 
 class Snake {
   /**
@@ -12,6 +13,7 @@ class Snake {
     this.eatFood = game.eatFood.bind(game);
     this.rivalBody = [];
     this.life = SNAKE_CONSTANTS.LIFE;
+    this.velocity = SNAKE_CONSTANTS.INITIAL_VELOCITY;
     this.lost = false;
     this.xAxisVelocity = 0; // the x axis movement of snake in each interval;
     this.yAxisVelocity = 0; // the y axis movement of snake in each interval
@@ -23,13 +25,14 @@ class Snake {
    * This function generates snake body coordinates from the given starting head coordinates
    */
   createInitialSnakeBody() {
+    // eslint-disable-next-line default-case
     switch (this.direction) {
       case 'down': {
         this.yAxisVelocity = this.velocity;
         break;
       }
       case 'up': {
-        this.yAxisVelocity = -this.veloctiy;
+        this.yAxisVelocity = -this.velocity;
         break;
       }
       case 'left': {
@@ -40,12 +43,8 @@ class Snake {
         this.xAxisVelocity = this.velocity;
         break;
       }
-      default: {
-        break;
-      }
     }
-    // populating the snake body coordinates of snake
-    for (let x = 0; x < this.length; x += 1) {
+    for (let x = 0; x < this.length; x += 1) { // populating the snake body coordinates of snake
       this.head.x += this.xAxisVelocity;
       this.head.y += this.yAxisVelocity;
       this.updateCoordinate();
@@ -98,19 +97,8 @@ class Snake {
    */
   hasCollidedWithItself() {
     if (this.bodyCoordinates.length > this.length - 1) {
-      const { x, y } = this.getHeadTip();
-      const collided = this.bodyCoordinates.find((collisionPoint) => {
-        if (
-          (x > collisionPoint.x - SNAKE_CONSTANTS.ARC_RADIUS) && (x < collisionPoint.x + SNAKE_CONSTANTS.ARC_RADIUS)
-          && (y > collisionPoint.y - SNAKE_CONSTANTS.ARC_RADIUS) && (y < collisionPoint.y + SNAKE_CONSTANTS.ARC_RADIUS)
-        ) {
-          return true;
-        }
-        return false;
-      });
-      if (collided) {
-        return true;
-      }
+      const headTip = this.getHeadTip();
+      return isPointInBody(this.bodyCoordinates, headTip);
     }
     return false;
   }
@@ -119,20 +107,8 @@ class Snake {
    * Checks collision of the head with it's rival's body.
    */
   hasCollidedWithRival() {
-    const { x, y } = this.getHeadTip();
-    const collided = this.rivalBody.find((collisionPoint) => {
-      if (
-        (x > collisionPoint.x - SNAKE_CONSTANTS.ARC_RADIUS) && (x < collisionPoint.x + SNAKE_CONSTANTS.ARC_RADIUS)
-        && (y > collisionPoint.y - SNAKE_CONSTANTS.ARC_RADIUS) && (y < collisionPoint.y + SNAKE_CONSTANTS.ARC_RADIUS)
-      ) {
-        return true;
-      }
-      return false;
-    });
-    if (collided) {
-      return true;
-    }
-    return false;
+    const headTip = this.getHeadTip();
+    return isPointInBody(this.rivalBody, headTip);
   }
 
   /**
@@ -140,81 +116,74 @@ class Snake {
    */
   getHeadTip() {
     const arcRadius = SNAKE_CONSTANTS.ARC_RADIUS;
+    const { x, y } = this.head;
+    let headTip;
     switch (this.direction) {
       case 'down': {
-        return { x: this.head.x, y: this.head.y + arcRadius };
+        headTip = { x, y: y + arcRadius };
+        break;
       }
       case 'up': {
-        return { x: this.head.x, y: this.head.y - arcRadius };
+        headTip = { x, y: y - arcRadius };
+        break;
       }
       case 'left': {
-        return { x: this.head.x - arcRadius, y: this.head.y };
+        headTip = { x: x - arcRadius, y };
+        break;
       }
       case 'right': {
-        return { x: this.head.x + arcRadius, y: this.head.y };
+        headTip = { x: x + arcRadius, y };
+        break;
       }
       default: {
-        return null;
+        break;
       }
     }
+    return headTip;
   }
 
   changeDirection(key) {
     // eslint-disable-next-line default-case
     switch (key) {
       case 'ArrowLeft': {
-        if (this.direction === 'left' || this.direction === 'right') {
-          break;
-        }
-        if (this.previousDirection === 'right' && this.previousDirection !== 'left') {
-          this.makeSmoothUTurn();
-        }
-        this.yAxisVelocity = 0;
-        this.xAxisVelocity = -2;
-        this.previousDirection = this.direction;
-        this.direction = 'left';
+        this.handleDirectionChange('left', 'right', -2, 0);
         break;
       }
       case 'ArrowRight': {
-        if (this.direction === 'left' || this.direction === 'right') {
-          break;
-        }
-        if (this.previousDirection === 'left' && this.previousDirection !== 'right') {
-          this.makeSmoothUTurn();
-        }
-        this.yAxisVelocity = 0;
-        this.xAxisVelocity = +2;
-        this.previousDirection = this.direction;
-        this.direction = 'right';
+        this.handleDirectionChange('right', 'left', 2, 0);
         break;
       }
       case 'ArrowUp': {
-        if (this.direction === 'up' || this.direction === 'down') {
-          break;
-        }
-        if (this.previousDirection === 'down' && this.previousDirection !== 'up') {
-          this.makeSmoothUTurn();
-        }
-        this.xAxisVelocity = 0;
-        this.yAxisVelocity = -2;
-        this.previousDirection = this.direction;
-        this.direction = 'up';
+        this.handleDirectionChange('up', 'down', 0, -2);
         break;
       }
       case 'ArrowDown': {
-        if (this.direction === 'up' || this.direction === 'down') {
-          break;
-        }
-        if (this.previousDirection === 'up' && this.previousDirection !== 'down') {
-          this.makeSmoothUTurn();
-        }
-        this.xAxisVelocity = 0;
-        this.yAxisVelocity = +2;
-        this.previousDirection = this.direction;
-        this.direction = 'down';
+        this.handleDirectionChange('down', 'up', 0, 2);
         break;
       }
     }
+  }
+
+  /**
+   * @param  {String} direction the key press direction from the user.
+   * @param  {String} oppositeDirection the opposite direction of the user clicked arrow, so we can handle some edge cases in direction change.
+   * @param  {Integer} xVelocity the velocity that will be given on the direction change on xAxis.
+   * @param  {Integer} yVelocity the velocity which will be given on the direction change on yAxis.
+   */
+  handleDirectionChange(direction, oppositeDirection, xVelocity, yVelocity) {
+    // the direction is already on the same direction or opposite direction snake will not change the directioin
+    if (this.direction === direction || this.direction === oppositeDirection) {
+      return false;
+    }
+    // if snake is taking a u-turn then below condition will be true, and it does not collide with itself, so we are giving it a smooth handling of you turn.
+    if (this.previousDirection !== direction && this.previousDirection === oppositeDirection) {
+      this.makeSmoothUTurn();
+    }
+    this.xAxisVelocity = xVelocity;
+    this.yAxisVelocity = +yVelocity;
+    this.previousDirection = this.direction;
+    this.direction = direction;
+    return true;
   }
 
   /**

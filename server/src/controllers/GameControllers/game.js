@@ -6,10 +6,8 @@ class Game {
     this.roomId = (Math.random() * 100000000000).toFixed(0);
     this.createSocketEvents(playerOne, socketOne);
     const initialProperties = {
-      head: { x: 200, y: 200 },
+      head: { x: 600, y: 200 },
       direction: 'down',
-      velocity: 2,
-      color: 'black',
       length: SNAKE_CONSTANTS.INITIAL_LENGTH,
     };
     this.firstSnake = new Snake(playerOne, initialProperties, this);
@@ -23,10 +21,8 @@ class Game {
   joinGame(PlayerTwo, socketTwo) {
     this.createSocketEvents(PlayerTwo, socketTwo);
     const initialProperties = {
-      head: { x: 300, y: 300 },
-      direction: 'down',
-      velocity: 2,
-      color: 'red',
+      head: { x: 100, y: 500 },
+      direction: 'up',
       length: SNAKE_CONSTANTS.INITIAL_LENGTH,
     };
     this.secondSnake = new Snake(PlayerTwo, initialProperties, this);
