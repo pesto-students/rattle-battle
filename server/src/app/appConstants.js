@@ -1,3 +1,9 @@
+import dotenv from 'dotenv';
+import dotenvParseVariables from 'dotenv-parse-variables';
+
+const { parsed: env = {} } = dotenv.config();
+const parsedEnv = dotenvParseVariables(env);
+
 const {
   PORT = 4000,
   DB_URL = 'mongodb://localhost:27017/testdb',
@@ -5,7 +11,8 @@ const {
   JWT_SECRET = 'randomdefaultjwtsecret',
   TRUSTED_ORIGIN = 'http://localhost:3000',
   JWT_DURATION = '7d',
-} = process.env;
+  LEADERBOARD_LIMIT = 5,
+} = parsedEnv;
 
 export {
   PORT,
@@ -14,4 +21,5 @@ export {
   JWT_SECRET,
   TRUSTED_ORIGIN,
   JWT_DURATION,
+  LEADERBOARD_LIMIT,
 };
