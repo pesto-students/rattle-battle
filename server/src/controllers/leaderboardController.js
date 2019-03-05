@@ -1,4 +1,5 @@
 import Leaderboard from '../database/models/leaderboard';
+import { LEADERBOARD_LIMIT } from '../app/appConstants';
 
 const addScore = async (req, res) => {
   const {
@@ -20,9 +21,10 @@ const addScore = async (req, res) => {
 };
 
 const getTopLeaders = async (req, res) => {
-  const topFive = await Leaderboard.find().sort('-score').limit(5);
+  const { limit = LEADERBOARD_LIMIT } = req.query;
+  const topLeaders = await Leaderboard.find().sort('-score').limit(limit);
 
-  res.json(topFive);
+  res.json(topLeaders);
 };
 
 export default {

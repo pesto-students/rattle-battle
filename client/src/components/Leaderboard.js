@@ -26,7 +26,8 @@ class Leaderboard extends React.Component {
   }
 
   componentDidMount() {
-    getTopPlayers()
+    const { limit } = this.props;
+    getTopPlayers({ params: { limit } })
       .then(({ data: leaderboards }) => {
         this.setState({
           leaderboards,
@@ -57,6 +58,7 @@ class Leaderboard extends React.Component {
 }
 
 Leaderboard.propTypes = {
+  limit: PropTypes.number.isRequired,
   classes: PropTypes.shape().isRequired,
 };
 

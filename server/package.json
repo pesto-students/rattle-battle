@@ -19,6 +19,7 @@
     "chai": "^4.2.0",
     "cors": "^2.8.5",
     "dotenv": "^6.2.0",
+    "dotenv-parse-variables": "^0.2.0",
     "esm": "^3.2.5",
     "express": "^4.16.4",
     "express-jwt": "^5.3.1",

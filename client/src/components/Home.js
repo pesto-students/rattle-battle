@@ -22,7 +22,7 @@ const Home = ({ classes }) => (
         Find a Friend
       </Button>
     </Grid>
-    <Leaderboard />
+    <Leaderboard limit={5} />
   </React.Fragment>
 );
 

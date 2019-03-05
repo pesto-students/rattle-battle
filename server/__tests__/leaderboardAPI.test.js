@@ -2,19 +2,18 @@ import { expect } from 'chai';
 import request from 'supertest';
 import {
   getMockPlayers,
-  sortPlayersAndGetTopFive,
+  sortPlayersAndGetTop,
   seedDatabase,
 } from '../src/utils/testUtils';
 import { generateJWT } from '../src/utils/encryptUtils';
 
 const { testServer } = global;
+const leaderboardLimit = 4;
 
 let mockPlayers;
-let topFivePlayers;
 
 beforeAll(async (done) => {
   mockPlayers = getMockPlayers();
-  topFivePlayers = sortPlayersAndGetTopFive(mockPlayers);
   await seedDatabase(mockPlayers, request(testServer));
   done();
 });
@@ -62,12 +61,13 @@ describe('Leaderboard API', () => {
   });
 
   describe('GET /api/leaderboard/top', () => {
-    it('gives top 5 scores on the leaderboard with the usernames', (done) => {
+    it('gives top scores on the leaderboard with the usernames', (done) => {
       request(testServer)
-        .get('/api/leaderboard/top')
+        .get(`/api/leaderboard/top?limit=${leaderboardLimit}`)
         .expect(200)
         .end((err, res) => {
-          expect(res.body).to.eql(topFivePlayers);
+          const topPlayers = sortPlayersAndGetTop(mockPlayers, leaderboardLimit);
+          expect(res.body).to.eql(topPlayers);
           done(err);
         });
     });

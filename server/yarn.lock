@@ -1745,6 +1745,13 @@ dot-prop@^4.1.0:
   dependencies:
     is-obj "^1.0.0"
 
+dotenv-parse-variables@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/dotenv-parse-variables/-/dotenv-parse-variables-0.2.0.tgz#7ee90889b0fb250e263694af22e1178f49bd1fe3"
+  integrity sha512-aaBAypheGL3MMeqP3DHMgKA000qs6IhY3ofJViM50CHdR3avchaV//7Ql6ZHLn5bpvsFeGodjgRoWDB2ewExQA==
+  dependencies:
+    debug "^3.1.0"
+
 dotenv@^6.2.0:
   version "6.2.0"
   resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-6.2.0.tgz#941c0410535d942c8becf28d3f357dbd9d476064"

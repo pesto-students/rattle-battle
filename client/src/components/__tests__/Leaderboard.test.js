@@ -8,7 +8,7 @@ describe('<Leaderboard />', () => {
   let wrapper;
 
   beforeEach(() => {
-    wrapper = mount(<Leaderboard />);
+    wrapper = mount(<Leaderboard limit={5} />);
   });
 
   it('should return null when there are no leaderboards', () => {

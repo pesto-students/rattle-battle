@@ -5,7 +5,7 @@ import fieldsErrors from '../middleware/fieldsErrors';
 import userController from '../controllers/userController';
 import requireAuth from '../middleware/requireAuth';
 import leaderboardController from '../controllers/leaderboardController';
-import leaderboardValidator from '../validators/leaderboardValidator';
+import { insertLeaderValidator, getLeadersValidator } from '../validators/leaderboardValidator';
 
 const router = express.Router();
 
@@ -15,7 +15,7 @@ router.get('/ping', (req, res) => {
 router.post('/api/signup', signupValidator, fieldsErrors, userController.createNewUser);
 router.post('/api/login', loginValidator, fieldsErrors, userController.loginUser);
 router.get('/api/validate', requireAuth, (req, res) => res.send(req.user));
-router.post('/api/leaderboard', requireAuth, leaderboardValidator, fieldsErrors, leaderboardController.addScore);
-router.get('/api/leaderboard/top', leaderboardController.getTopLeaders);
+router.post('/api/leaderboard', requireAuth, insertLeaderValidator, fieldsErrors, leaderboardController.addScore);
+router.get('/api/leaderboard/top', getLeadersValidator, fieldsErrors, leaderboardController.getTopLeaders);
 
 export default router;
