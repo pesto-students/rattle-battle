@@ -9,6 +9,7 @@ class Game {
     const initialProperties = {
       head: { x: 600, y: 200 },
       direction: 'down',
+      color: 'red',
       length: SNAKE_CONSTANTS.INITIAL_LENGTH,
     };
     this.firstSnake = new Snake(playerId, initialProperties, this);
@@ -25,6 +26,7 @@ class Game {
     const initialProperties = {
       head: { x: 100, y: 500 },
       direction: 'up',
+      color: 'black',
       length: SNAKE_CONSTANTS.INITIAL_LENGTH,
     };
     this.secondSnake = new Snake(playerId, initialProperties, this);
@@ -42,12 +44,16 @@ class Game {
   }
 
   gameStart() {
-    const runFunction = () => {
-      this.io.in(this.roomId).emit('stepChange', this.moveSnakes());
+    this.io.in(this.roomId).emit('getReady', 'Get Ready to play');
+    const prepareToPlay = () => {
+      const runFunction = () => {
+        this.io.in(this.roomId).emit('stepChange', this.moveSnakes());
+      };
+      const interval = setInterval(runFunction.bind(this), 30);
+      this.interval = interval;
+      this.setIntervalNumber(interval);
     };
-    const interval = setInterval(runFunction.bind(this), 30);
-    this.interval = interval;
-    this.setIntervalNumber(interval);
+    setTimeout(prepareToPlay.bind(this), 3000); // game will start in 3 second.
   }
 
   setIntervalNumber(number) {
@@ -94,8 +100,8 @@ class Game {
     this.secondSnake.moveSnakeOneStep();
     return {
       snakeBodies: [
-        ...this.firstSnake.bodyCoordinates,
-        ...this.secondSnake.bodyCoordinates,
+        { color: this.firstSnake.color, body: this.firstSnake.bodyCoordinates },
+        { color: this.secondSnake.color, body: this.secondSnake.bodyCoordinates },
       ],
       food: this.food,
     };

@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
+import { Route, BrowserRouter as Router } from 'react-router-dom';
 import { decode } from 'jsonwebtoken';
 
 import Navbar from './components/Navbar';
 import Home from './components/Home';
+import GameBoardComponent from './components/gameBoardComponent/gameBoardComponent';
 import UserContext from './utils/user-context';
 
 class App extends Component {
@@ -48,7 +50,12 @@ class App extends Component {
     return (
       <UserContext.Provider value={{ user, login, logout }}>
         <Navbar />
-        <Home />
+        <Router>
+          <div>
+            <Route exact path="/" component={Home} />
+            <Route exact path="/game" component={GameBoardComponent} />
+          </div>
+        </Router>
       </UserContext.Provider>
     );
   }
