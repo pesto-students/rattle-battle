@@ -4,7 +4,7 @@ import {
   getMockPlayers,
   sortPlayersAndGetTop,
   seedDatabase,
-} from '../src/utils/testUtils';
+} from './testUtils';
 import { generateJWT } from '../src/utils/encryptUtils';
 
 const { testServer } = global;

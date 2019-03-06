@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import request from 'supertest';
-import { getMockUser } from '../src/utils/testUtils';
+import { getMockUser } from './testUtils';
 
 let mockUser;
 

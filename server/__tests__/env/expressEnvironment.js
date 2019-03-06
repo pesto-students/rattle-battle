@@ -1,5 +1,5 @@
 import NodeEnvironment from 'jest-environment-node';
-import { createTestServer } from '../../src/utils/testUtils';
+import { createTestServer } from '../testUtils';
 
 class ExpressEnvironment extends NodeEnvironment {
   async setup() {

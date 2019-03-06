@@ -1,13 +1,13 @@
 import mongoose from 'mongoose';
 import { Mockgoose } from 'mockgoose';
-import app from '../app/app';
+import app from '../src/app/app';
 import {
   TEST_PORT,
   DB_URL,
   LEADERBOARD_LIMIT,
-} from '../app/appConstants';
-import mongoConfig from '../database/mongoConfig';
-import { generateJWT } from './encryptUtils';
+} from '../src/app/appConstants';
+import mongoConfig from '../src/database/mongoConfig';
+import { generateJWT } from '../src/utils/encryptUtils';
 
 export const getMockUser = () => {
   const testUser = (Math.random() * 10000).toFixed(0);
