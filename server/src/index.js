@@ -27,7 +27,7 @@ io.sockets.on('connection', (socket) => {
   });
 
   socket.on('leaveGame', () => {
-    // console.log('Closing game');
+    // console.log('Leaving game');
     // @TODO:Make this player lose.
     games[socket.gameIndex].stopGame();
     games.splice(socket.gameIndex, 1);
