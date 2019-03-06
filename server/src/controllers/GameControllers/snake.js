@@ -1,5 +1,5 @@
 import SNAKE_CONSTANTS from './gameConstants';
-import { isPointInBody } from './utility';
+import isPointInBody from './utility';
 
 class Snake {
   /**
@@ -75,7 +75,8 @@ class Snake {
 
   getFoodReward() {
     this.length += SNAKE_CONSTANTS.FOOD_LENGTH_REWARD;
-    this.life += SNAKE_CONSTANTS.FOOD_LIFE_REWARD; // increasing the life by some constant unit of seconds second on eating food.
+    // increasing the life by some constant unit of seconds second on eating food.
+    this.life += SNAKE_CONSTANTS.FOOD_LIFE_REWARD;
   }
 
   /**
@@ -86,7 +87,8 @@ class Snake {
       x: this.head.x,
       y: this.head.y,
     });
-    // removing one tail element to limit the snake length, when snake gets larger than snake length parameter
+    // removing one tail element to limit the snake length,-
+    // -when snake gets larger than snake length parameter
     if (this.bodyCoordinates.length > this.length) {
       this.bodyCoordinates.shift();
     }
@@ -112,34 +114,19 @@ class Snake {
   }
 
   /**
-   * We are drawing arcs on each cooridnate point in the snake body, so to check collision we are getting the most ahead part of the snake head.
+   * We are drawing arcs on each cooridnate point in the snake body-
+   * -so to check collision we are getting the most ahead part of the snake head.
    */
   getHeadTip() {
     const arcRadius = SNAKE_CONSTANTS.ARC_RADIUS;
     const { x, y } = this.head;
-    let headTip;
-    switch (this.direction) {
-      case 'down': {
-        headTip = { x, y: y + arcRadius };
-        break;
-      }
-      case 'up': {
-        headTip = { x, y: y - arcRadius };
-        break;
-      }
-      case 'left': {
-        headTip = { x: x - arcRadius, y };
-        break;
-      }
-      case 'right': {
-        headTip = { x: x + arcRadius, y };
-        break;
-      }
-      default: {
-        break;
-      }
-    }
-    return headTip;
+    const headTipMap = {
+      down: { x, y: y + arcRadius },
+      up: { x, y: y - arcRadius },
+      left: { x: x - arcRadius, y },
+      right: { x: x + arcRadius, y },
+    };
+    return headTipMap[this.direction];
   }
 
   changeDirection(key) {
@@ -166,16 +153,19 @@ class Snake {
 
   /**
    * @param  {String} direction the key press direction from the user.
-   * @param  {String} oppositeDirection the opposite direction of the user clicked arrow, so we can handle some edge cases in direction change.
+   * @param  {String} oppositeDirection the opposite direction of the user clicked arrow,--
+   *  --so we can handle some edge cases in direction change.
    * @param  {Integer} xVelocity the velocity that will be given on the direction change on xAxis.
    * @param  {Integer} yVelocity the velocity which will be given on the direction change on yAxis.
    */
   handleDirectionChange(direction, oppositeDirection, xVelocity, yVelocity) {
-    // the direction is already on the same direction or opposite direction snake will not change the directioin
+    // the direction is already on the same direction
+    //  or opposite direction snake will not change the directioin
     if (this.direction === direction || this.direction === oppositeDirection) {
       return false;
     }
-    // if snake is taking a u-turn then below condition will be true, and it does not collide with itself, so we are giving it a smooth handling of you turn.
+    // if snake is taking a u-turn then below condition will be true,
+    // and it does not collide with itself, so we are giving it a smooth handling of you turn.
     if (this.previousDirection !== direction && this.previousDirection === oppositeDirection) {
       this.makeSmoothUTurn();
     }
@@ -190,7 +180,8 @@ class Snake {
    * This function ensures smooth u-turn on board(UI) when user takes 180 degree turn.
    */
   makeSmoothUTurn() {
-    // @TODO:Refactor this code in future version, either user lodash or move it into some utility file.
+    // @TODO:Refactor this code in future version,
+    //  either user lodash or move it into some utility file.
     this.moveSnakeOneStep();
     this.moveSnakeOneStep();
     this.moveSnakeOneStep();

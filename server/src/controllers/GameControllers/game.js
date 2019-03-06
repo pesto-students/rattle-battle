@@ -2,15 +2,16 @@ import Snake from './snake';
 import SNAKE_CONSTANTS from './gameConstants';
 
 class Game {
-  constructor(playerOne, socketOne, io) {
+  constructor(playerOneInfo) {
+    const { playerId, socket, io } = playerOneInfo;
     this.roomId = (Math.random() * 100000000000).toFixed(0);
-    this.createSocketEvents(playerOne, socketOne);
+    this.createSocketEvents(playerId, socket);
     const initialProperties = {
       head: { x: 600, y: 200 },
       direction: 'down',
       length: SNAKE_CONSTANTS.INITIAL_LENGTH,
     };
-    this.firstSnake = new Snake(playerOne, initialProperties, this);
+    this.firstSnake = new Snake(playerId, initialProperties, this);
     this.secondSnake = null;
     this.freeToJoin = true;
     this.winner = null;
@@ -18,14 +19,15 @@ class Game {
     this.io = io;
   }
 
-  joinGame(PlayerTwo, socketTwo) {
-    this.createSocketEvents(PlayerTwo, socketTwo);
+  joinGame(playerTwoInfo) {
+    const { playerId, socket } = playerTwoInfo;
+    this.createSocketEvents(playerId, socket);
     const initialProperties = {
       head: { x: 100, y: 500 },
       direction: 'up',
       length: SNAKE_CONSTANTS.INITIAL_LENGTH,
     };
-    this.secondSnake = new Snake(PlayerTwo, initialProperties, this);
+    this.secondSnake = new Snake(playerId, initialProperties, this);
     this.firstSnake.rivalBody = this.secondSnake.bodyCoordinates;
     this.secondSnake.rivalBody = this.firstSnake.bodyCoordinates;
     this.freeToJoin = false;
@@ -54,7 +56,8 @@ class Game {
   }
 
   /**
-   * Creates coordinates for food on the board by checking that food is not getting created on the snake bodies;
+   * Creates coordinates for food on the board by checking-
+   * -that food is not getting created on the snake bodies;
    */
   makeFood() {
     const snakeBodies = [
@@ -74,7 +77,8 @@ class Game {
   }
 
   eatFood(snakeHead) {
-    const { x, y } = this.food; // again here, the variable names are not bad, they are just x,y coordinate
+    // let's get food coordinate x and y
+    const { x, y } = this.food;
     if (
       (x > snakeHead.x - 10) && (x < snakeHead.x + 10)
       && (y > snakeHead.y - 10) && (y < snakeHead.y + 10)

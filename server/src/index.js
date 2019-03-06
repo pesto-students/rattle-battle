@@ -13,15 +13,14 @@ const io = socketIo(server);
 const games = [];
 io.sockets.on('connection', (socket) => {
   socket.on('joinGame', () => {
-    if (games.length === 0) {
-      const game = new Game(0, socket, io);
-      games.push(game);
-    } else if (games[games.length - 1].freeToJoin) {
-      const game = games[games.length - 1];
-      game.joinGame(1, socket);
+    const lastGame = games[games.length - 1];
+    if (lastGame && lastGame.freeToJoin) {
+      const playerTwoInfo = { playerId: 1, socket };
+      lastGame.joinGame(playerTwoInfo);
     } else {
-      const game = new Game(0, socket, io);
-      games.push(game);
+      const playerOneInfo = { playerId: 0, socket, io };
+      const newGame = new Game(playerOneInfo);
+      games.push(newGame);
     }
     // eslint-disable-next-line no-param-reassign
     socket.gameIndex = games.length - 1;

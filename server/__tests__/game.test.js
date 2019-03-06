@@ -4,7 +4,7 @@ import SNAKE_CONSTANTS from '../src/controllers/GameControllers/gameConstants';
 describe('Test Game Class', () => {
   let game;
   beforeEach(() => {
-    const playerId = 0;
+    let playerId = 0;
     const socket = { // a socket mock
       emit() { },
       join() { },
@@ -17,9 +17,12 @@ describe('Test Game Class', () => {
         };
       },
     };
-    game = new Game(playerId, socket, io);
+    const playerInfo = { playerId, socket, io };
+    game = new Game(playerInfo);
     game.gameStart = () => { }; // we don't want to start the game.
-    game.joinGame(1, socket);
+    playerId = 1;
+    const playerTwoInfo = { playerId, socket };
+    game.joinGame(playerTwoInfo);
   });
 
   afterEach(() => {
