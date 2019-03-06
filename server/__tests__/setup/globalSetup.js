@@ -1,4 +1,4 @@
-const { createMockgoose } = require('../../src/utils/testUtils');
+const { createMockgoose } = require('../testUtils');
 
 module.exports = async () => {
   global.MOCKGOOSE = await createMockgoose();
