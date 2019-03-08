@@ -12,14 +12,14 @@ const server = app.listen(PORT, () => {
 const io = socketIo(server);
 const games = [];
 io.sockets.on('connection', (socket) => {
-  socket.on('joinGame', () => {
+  socket.on('joinGame', (playerId) => {
     const lastGame = games[games.length - 1];
+    const playerInfo = { playerId, socket };
     if (lastGame && lastGame.freeToJoin) {
-      const playerTwoInfo = { playerId: 1, socket };
-      lastGame.joinGame(playerTwoInfo);
+      lastGame.joinGame(playerInfo);
     } else {
-      const playerOneInfo = { playerId: 0, socket, io };
-      const newGame = new Game(playerOneInfo);
+      playerInfo.io = io;
+      const newGame = new Game(playerInfo);
       games.push(newGame);
     }
     // eslint-disable-next-line no-param-reassign
