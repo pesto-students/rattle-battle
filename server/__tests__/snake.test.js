@@ -4,6 +4,7 @@ import Snake from '../src/controllers/GameControllers/snake';
 describe('Test Snake Class', () => {
   let snake;
   const playerId = 'zarathustra';
+  const username = 'vikash';
   const initialProperty = {
     head: { x: 200, y: 200 },
     direction: 'down',
@@ -16,7 +17,7 @@ describe('Test Snake Class', () => {
   };
   beforeEach(() => {
     const intialPropertyToPass = JSON.parse(JSON.stringify(initialProperty));
-    snake = new Snake(playerId, intialPropertyToPass, game);
+    snake = new Snake(playerId, username, intialPropertyToPass, game);
   });
 
   afterEach(() => {

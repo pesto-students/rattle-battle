@@ -66,9 +66,9 @@ class Home extends Component {
   }
 
   playGame() {
-    const { user } = this.props;
+    const { user: { id, username } } = this.props;
     this.setState({ isLoading: true });
-    socket.emit('joinGame', user.id);
+    socket.emit('joinGame', { id, username });
     socket.on('assignPlayerId', (playerId) => {
       // eslint-disable-next-line no-console
       console.log('playerId assigned: ', playerId);
@@ -95,10 +95,11 @@ class Home extends Component {
 }
 
 Home.propTypes = {
+  // eslint-disable-next-line react/require-default-props
   user: PropTypes.shape({
     id: PropTypes.string.isRequired,
     username: PropTypes.string.isRequired,
-  }).isRequired,
+  }),
   classes: PropTypes.shape({
     button: PropTypes.string.isRequired,
     rightIcon: PropTypes.string.isRequired,
