@@ -28,9 +28,9 @@ io.sockets.on('connection', (socket) => {
 
   socket.on('leaveGame', (userId) => {
     const game = games[socket.gameIndex];
-    if (game && [game.firstSnake.ownerId, game.secondSnake.ownerId].includes(userId)) {
+    if (game) {
       game.stopGame({ lostUserId: userId });
-      games.splice(socket.gameIndex, 1);
+      games[socket.gameIndex] = undefined;
     }
   });
 });
