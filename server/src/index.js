@@ -27,7 +27,6 @@ io.sockets.on('connection', (socket) => {
   });
 
   socket.on('leaveGame', (userId) => {
-    console.log('Leaving game', userId);
     const game = games[socket.gameIndex];
     if (game && [game.firstSnake.ownerId, game.secondSnake.ownerId].includes(userId)) {
       game.stopGame({ lostUserId: userId });

@@ -18,7 +18,7 @@ const styles = () => ({
     margin: 'auto',
   },
 });
-
+/* eslint-disable no-alert */
 class GameBoardComponent extends Component {
   constructor(props) {
     super(props);
@@ -27,7 +27,7 @@ class GameBoardComponent extends Component {
       const { playerId, socket } = playerInfo;
       this.state = {
         playerId,
-        scores: [],
+        players: [],
       };
       this.leaveGame = this.leaveGame.bind(this);
       this.socket = socket;
@@ -43,7 +43,7 @@ class GameBoardComponent extends Component {
       this.socket.on('stepChange', (game) => {
         this.stepChange(game);
       });
-      this.socket.on('lifeChange', scores => this.setState({ scores }));
+      this.socket.on('lifeChange', players => this.setState({ players }));
       this.socket.on('gameResult', ({ lostUserId }) => {
         const { playerId } = this.state;
         if (lostUserId === playerId) {
@@ -108,7 +108,7 @@ class GameBoardComponent extends Component {
       // -- will redirect to home page, where he/she/they can request to a new game play
       return <Redirect to={{ pathname: '/' }} />;
     }
-    const { scores } = this.state;
+    const { playerId, players } = this.state;
     const { classes } = this.props;
     return (
       <div className={classes.playArea}>
@@ -123,7 +123,7 @@ class GameBoardComponent extends Component {
           />
           <button type="button" onClick={this.leaveGame}>Leave this Game</button>
         </div>
-        <Scoreboard scores={scores} />
+        <Scoreboard players={players} playerId={playerId} />
       </div>
     );
   }
