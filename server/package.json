@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "rm -rf build && babel src -d build --source-maps",
-    "start": "node build/index.js",
+    "start": "yarn build && node build/index.js",
     "start:dev": "nodemon --exec babel-node src",
     "lint": "npx eslint src",
     "test": "jest --runInBand"
@@ -14,6 +14,11 @@
   "license": "MIT",
   "private": false,
   "dependencies": {
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.3.3",
+    "@babel/node": "^7.2.2",
+    "@babel/preset-env": "^7.3.1",
+    "@babel/polyfill": "^7.2.5",
     "bcrypt": "^3.0.4",
     "body-parser": "^1.18.3",
     "cors": "^2.8.5",
@@ -27,14 +32,9 @@
     "socket.io": "^2.2.0"
   },
   "devDependencies": {
-    "@babel/polyfill": "^7.2.5",
     "mockgoose": "^8.0.1",
     "esm": "^3.2.5",
     "chai": "^4.2.0",
-    "@babel/cli": "^7.2.3",
-    "@babel/core": "^7.3.3",
-    "@babel/node": "^7.2.2",
-    "@babel/preset-env": "^7.3.1",
     "eslint": "^5.13.0",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.16.0",
