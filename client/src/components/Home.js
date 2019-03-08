@@ -9,6 +9,14 @@ import Leaderboard from './Leaderboard';
 import LoaderComponent from './common/loaderComponent/loaderComponent';
 
 import socket from '../api/socketService';
+import LoginPrompt from './LoginPrompt';
+
+/* eslint-disable react/prop-types */
+const ButtonComponent = ({ children, ...otherProps }) => (
+  <Button variant="contained" color="primary" size="large" {...otherProps}>
+    {children}
+  </Button>
+);
 
 const styles = theme => ({
   button: { margin: theme.spacing.unit },
@@ -29,6 +37,11 @@ class Home extends Component {
   }
 
   componentDidMount() {
+    const { user } = this.props;
+    if (!user) {
+      return;
+    }
+
     socket.emit('connection', () => {
       // eslint-disable-next-line no-console
       console.log('Socket connection is set with back-end server.');
@@ -45,28 +58,39 @@ class Home extends Component {
 
   getCurrentView() {
     const { classes } = this.props;
-    const { isLoading, loaderMessage } = this.state;
+    const { isLoading, loaderMessage, showLoginPrompt } = this.state;
     if (isLoading) {
-      return (<LoaderComponent width="200" height="200" message={loaderMessage} />);
+      return <LoaderComponent width="200" height="200" message={loaderMessage} />;
     }
     return (
       <div>
         <Grid container direction="row" justify="center" alignItems="center">
-          <Button className={classes.button} onClick={this.playGame} variant="contained" color="primary" size="large">
+          <ButtonComponent className={classes.button} onClick={this.playGame}>
             Play
             <Icon className={classes.rightIcon}>send</Icon>
-          </Button>
-          <Button className={classes.button} variant="contained" color="secondary" size="large">
-            Find a Friend
-          </Button>
+          </ButtonComponent>
+          <ButtonComponent className={classes.button}>Find a Friend</ButtonComponent>
         </Grid>
         <Leaderboard limit={5} />
+        <LoginPrompt
+          show={showLoginPrompt}
+          close={() => this.setState({ showLoginPrompt: false })}
+        />
       </div>
     );
   }
 
   playGame() {
-    const { user: { id, username } } = this.props;
+    const { user } = this.props;
+    if (!user) {
+      this.setState({
+        showLoginPrompt: true,
+      });
+      return;
+    }
+
+    const { id, username } = user;
+
     this.setState({ isLoading: true });
     socket.emit('joinGame', { id, username });
     socket.on('assignPlayerId', (playerId) => {
@@ -86,11 +110,7 @@ class Home extends Component {
     if (shouldRedirectToGame) {
       return this.redirectToGame();
     }
-    return (
-      <React.Fragment>
-        {this.getCurrentView()}
-      </React.Fragment>
-    );
+    return this.getCurrentView();
   }
 }
 
