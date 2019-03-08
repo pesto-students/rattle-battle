@@ -37,11 +37,6 @@ class Home extends Component {
   }
 
   componentDidMount() {
-    const { user } = this.props;
-    if (!user) {
-      return;
-    }
-
     socket.emit('connection', () => {
       // eslint-disable-next-line no-console
       console.log('Socket connection is set with back-end server.');

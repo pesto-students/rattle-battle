@@ -205,12 +205,18 @@ class Snake {
     this.moveSnakeOneStep();
   }
 
-  getScore() {
-    const { ownerId: id, username, life } = this;
+  getProfile() {
+    const {
+      ownerId: id,
+      username,
+      life,
+      color,
+    } = this;
     return {
       id,
       username,
       life,
+      color,
     };
   }
 }

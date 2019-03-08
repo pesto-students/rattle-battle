@@ -26,7 +26,7 @@ class Game {
     const initialProperties = {
       head: { x: 100, y: 500 },
       direction: 'up',
-      color: 'black',
+      color: 'blue',
       length: SNAKE_CONSTANTS.INITIAL_LENGTH,
     };
     this.secondSnake = new Snake(playerId, username, initialProperties, this);
@@ -60,8 +60,8 @@ class Game {
     };
     setTimeout(() => {
       this.sendData('lifeChange', [
-        this.firstSnake.getScore(),
-        this.secondSnake.getScore(),
+        this.firstSnake.getProfile(),
+        this.secondSnake.getProfile(),
       ]);
       prepareToPlay();
     }, 3000); // game will start in 3 second.
@@ -77,8 +77,8 @@ class Game {
       this.firstSnake.life -= 1;
       this.secondSnake.life -= 1;
       this.sendData('lifeChange', [
-        this.firstSnake.getScore(),
-        this.secondSnake.getScore(),
+        this.firstSnake.getProfile(),
+        this.secondSnake.getProfile(),
       ]);
     };
     this.lifeInterval = setInterval(reduceSnakeLives, 1000);
