@@ -21,6 +21,8 @@ class Snake {
     this.yAxisVelocity = 0; // the y axis movement of snake in each interval
     this.bodyCoordinates = [];
     this.createInitialSnakeBody(); // populate initial body of snake according to given length.
+    this.tild = 0; // to wiggle on the axis
+    this.negative = false; // for use of snake wiggling.no
   }
 
   /**
@@ -60,13 +62,14 @@ class Snake {
     this.head.x += this.xAxisVelocity; // snake head's new x coordinate
     this.head.y += this.yAxisVelocity; // snake head's new y coordinate
     this.carryOver();
+    this.makeItWiggle();
     if (this.eatFood(this.head)) {
       this.updateCoordinate();
       this.getFoodReward();
       return true;
     }
     if (this.hasCollidedWithItself()
-      || this.hasCollidedWithRival() || this.life <= 0) {
+      || this.hasCollidedWithRival() || this.life < 0) {
       this.lost = true;
       // @TODO: emit a game mechanics event for game lost;
       this.stopGame({ lostUserId: this.ownerId });
@@ -77,15 +80,35 @@ class Snake {
   }
 
   carryOver() {
-    const { head } = this;
+    const head = this.getHeadTip();
     if (head.x <= 0) {
-      head.x = SNAKE_CONSTANTS.GAME_BOARD.WIDTH;
+      this.head.x = SNAKE_CONSTANTS.GAME_BOARD.WIDTH;
     } else if (head.x >= SNAKE_CONSTANTS.GAME_BOARD.WIDTH) {
-      head.x = 0;
+      this.head.x = 0;
     } else if (head.y <= 0) {
-      head.y = SNAKE_CONSTANTS.GAME_BOARD.HEIGHT;
+      this.head.y = SNAKE_CONSTANTS.GAME_BOARD.HEIGHT;
     } else if (head.y >= SNAKE_CONSTANTS.GAME_BOARD.HEIGHT) {
-      head.y = 0;
+      this.head.y = 0;
+    }
+  }
+
+  makeItWiggle() {
+    if (this.direction === 'left' || this.direction === 'right') {
+      this.head.y = this.head.y + this.tild;
+    }
+    if (this.direction === 'up' || this.direction === 'down') {
+      this.head.x = this.head.x + this.tild;
+    }
+    if (this.negative) {
+      this.tild -= 0.1;
+    } else {
+      this.tild += 0.1;
+    }
+    if (this.tild > 0.3) {
+      this.negative = true;
+    }
+    if (this.tild < -0.3) {
+      this.negative = false;
     }
   }
 
