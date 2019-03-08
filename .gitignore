@@ -11,6 +11,8 @@ node_modules/
 */coverage/
 
 # production
+app.production.yaml
+
 # /build
 build/
 # misc

@@ -27,5 +27,10 @@
       "dest": "client/index.html"
     }
   ],
-  "alias": ["rattle-battle.now.sh"]
+  "alias": ["rattle-battle.now.sh"],
+  "build": {
+    "env": {
+      "REACT_APP_API_URI": "https://rattle-battle-233917.appspot.com"
+    }
+  }
 }
