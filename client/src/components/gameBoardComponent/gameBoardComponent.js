@@ -51,6 +51,8 @@ class GameBoardComponent extends Component {
         } else {
           alert('Your opponent lost, Now get a beer and Enjoy.');
         }
+        this.redirectToHome = true;
+        this.forceUpdate();
       });
     }
     window.addEventListener('beforeunload', this.leaveGame);
