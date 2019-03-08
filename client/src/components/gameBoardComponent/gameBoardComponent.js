@@ -44,9 +44,21 @@ class GameBoardComponent extends Component {
         this.stepChange(game);
       });
       this.socket.on('lifeChange', scores => this.setState({ scores }));
+      this.socket.on('gameResult', ({ lostUserId }) => {
+        const { playerId } = this.state;
+        if (lostUserId === playerId) {
+          alert('You Lost, Now go home and cry in front of your mommy.');
+        } else {
+          alert('Your opponent lost, Now get a beer and Enjoy.');
+        }
+      });
     }
+    window.addEventListener('beforeunload', this.leaveGame);
   }
 
+  componentWillUnmount() {
+    window.removeEventListener('beforeunload', this.leaveGame);
+  }
 
   handleKeyDown = (event) => {
     const { key } = event;
@@ -86,7 +98,8 @@ class GameBoardComponent extends Component {
    * Emits a event that current user has left the game.
    */
   leaveGame() {
-    this.socket.emit('leaveGame', 'nothing');
+    const { playerId } = this.state;
+    this.socket.emit('leaveGame', playerId);
   }
 
   render() {

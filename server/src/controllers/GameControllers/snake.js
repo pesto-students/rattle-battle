@@ -12,6 +12,7 @@ class Snake {
     this.username = username;
     Object.assign(this, initialProperties);
     this.eatFood = game.eatFood.bind(game);
+    this.stopGame = game.stopGame.bind(game);
     this.rivalBody = [];
     this.life = SNAKE_CONSTANTS.LIFE;
     this.velocity = SNAKE_CONSTANTS.INITIAL_VELOCITY;
@@ -58,20 +59,34 @@ class Snake {
   moveSnakeOneStep() {
     this.head.x += this.xAxisVelocity; // snake head's new x coordinate
     this.head.y += this.yAxisVelocity; // snake head's new y coordinate
+    this.carryOver();
     if (this.eatFood(this.head)) {
       this.updateCoordinate();
       this.getFoodReward();
       return true;
     }
     if (this.hasCollidedWithItself()
-      || this.hasCollidedWithRival()) {
+      || this.hasCollidedWithRival() || this.life <= 0) {
       this.lost = true;
       // @TODO: emit a game mechanics event for game lost;
-      clearInterval(this.interval);
+      this.stopGame({ lostUserId: this.ownerId });
       return false;
     }
     this.updateCoordinate();
     return true;
+  }
+
+  carryOver() {
+    const { head } = this;
+    if (head.x <= 0) {
+      head.x = SNAKE_CONSTANTS.GAME_BOARD.WIDTH;
+    } else if (head.x >= SNAKE_CONSTANTS.GAME_BOARD.WIDTH) {
+      head.x = 0;
+    } else if (head.y <= 0) {
+      head.y = SNAKE_CONSTANTS.GAME_BOARD.HEIGHT;
+    } else if (head.y >= SNAKE_CONSTANTS.GAME_BOARD.HEIGHT) {
+      head.y = 0;
+    }
   }
 
   getFoodReward() {
