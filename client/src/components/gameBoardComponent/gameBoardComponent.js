@@ -34,6 +34,7 @@ class GameBoardComponent extends Component {
     } else {
       this.redirectToHome = true;
     }
+    this.result = false;
   }
 
   componentDidMount() {
@@ -45,14 +46,17 @@ class GameBoardComponent extends Component {
       });
       this.socket.on('lifeChange', players => this.setState({ players }));
       this.socket.on('gameResult', ({ lostUserId }) => {
-        const { playerId } = this.state;
-        if (lostUserId === playerId) {
-          alert('You Lost, Now go home and cry in front of your mommy.');
-        } else {
-          alert('Your opponent lost, Now get a beer and Enjoy.');
+        if (!this.result) {
+          this.result = true;
+          const { playerId } = this.state;
+          if (lostUserId === playerId) {
+            alert('You Lost, Now go home and cry in front of your mommy.');
+          } else {
+            alert('Your opponent lost, Now get a beer and Enjoy.');
+          }
+          this.redirectToHome = true;
+          this.forceUpdate();
         }
-        this.redirectToHome = true;
-        this.forceUpdate();
       });
     }
     window.addEventListener('beforeunload', this.leaveGame);
