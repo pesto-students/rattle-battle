@@ -35,6 +35,7 @@ class GameBoardComponent extends Component {
       this.redirectToHome = true;
     }
     this.result = false;
+    this.hasLeftGame = false;
   }
 
   componentDidMount() {
@@ -104,8 +105,11 @@ class GameBoardComponent extends Component {
    * Emits a event that current user has left the game.
    */
   leaveGame() {
-    const { playerId } = this.state;
-    this.socket.emit('leaveGame', playerId);
+    if (!this.hasLeftGame) {
+      this.hasLeftGame = true;
+      const { playerId } = this.state;
+      this.socket.emit('leaveGame', playerId);
+    }
   }
 
   render() {
