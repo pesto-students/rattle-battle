@@ -7,8 +7,9 @@ class Snake {
    * @param  {Object} initialProperties initial values for snake body and motion.
    * @param  {Object} game instance of game class for status of current game.
    */
-  constructor(playerId, initialProperties, game) {
+  constructor(playerId, username, initialProperties, game) {
     this.ownerId = playerId;
+    this.username = username;
     Object.assign(this, initialProperties);
     this.eatFood = game.eatFood.bind(game);
     this.rivalBody = [];
@@ -187,6 +188,15 @@ class Snake {
     this.moveSnakeOneStep();
     this.moveSnakeOneStep();
     this.moveSnakeOneStep();
+  }
+
+  getScore() {
+    const { ownerId: id, username, life } = this;
+    return {
+      id,
+      username,
+      life,
+    };
   }
 }
 

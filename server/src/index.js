@@ -12,9 +12,9 @@ const server = app.listen(PORT, () => {
 const io = socketIo(server);
 const games = [];
 io.sockets.on('connection', (socket) => {
-  socket.on('joinGame', (playerId) => {
+  socket.on('joinGame', ({ id: playerId, username }) => {
     const lastGame = games[games.length - 1];
-    const playerInfo = { playerId, socket };
+    const playerInfo = { playerId, username, socket };
     if (lastGame && lastGame.freeToJoin) {
       lastGame.joinGame(playerInfo);
     } else {

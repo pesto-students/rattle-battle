@@ -1,12 +1,25 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
 
 import backgroundImage from '../../static/images/sand.jpg';
-import './gameBoardComponent.css';
 import GAME_CONSTANTS from './gameConstants';
+import Scoreboard from '../Scoreboard';
 
-export default class GameBoardComponent extends Component {
+const styles = () => ({
+  playArea: {
+    display: 'flex',
+  },
+  boardContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    width: 'fit-content',
+    margin: 'auto',
+  },
+});
+
+class GameBoardComponent extends Component {
   constructor(props) {
     super(props);
     const { playerInfo } = props.location;
@@ -14,6 +27,7 @@ export default class GameBoardComponent extends Component {
       const { playerId, socket } = playerInfo;
       this.state = {
         playerId,
+        scores: [],
       };
       this.leaveGame = this.leaveGame.bind(this);
       this.socket = socket;
@@ -29,8 +43,7 @@ export default class GameBoardComponent extends Component {
       this.socket.on('stepChange', (game) => {
         this.stepChange(game);
       });
-      // eslint-disable-next-line no-console
-      this.socket.on('lifeChange', console.log);
+      this.socket.on('lifeChange', scores => this.setState({ scores }));
     }
   }
 
@@ -82,23 +95,29 @@ export default class GameBoardComponent extends Component {
       // -- will redirect to home page, where he/she/they can request to a new game play
       return <Redirect to={{ pathname: '/' }} />;
     }
+    const { scores } = this.state;
+    const { classes } = this.props;
     return (
-      <div className="Board-container">
-        <img src={backgroundImage} id="backgroundImage" style={{ display: 'none' }} alt="backgroundImage" />
-        <canvas
-          ref={(canvas) => { this.canvas = canvas; }}
-          width={GAME_CONSTANTS.GAME_BOARD.WIDTH}
-          height={GAME_CONSTANTS.GAME_BOARD.HEIGHT}
-          tabIndex="0"
-          onKeyDown={this.handleKeyDown}
-        />
-        <button type="button" onClick={this.leaveGame}>Leave this Game</button>
+      <div className={classes.playArea}>
+        <div className={classes.boardContainer}>
+          <img src={backgroundImage} id="backgroundImage" style={{ display: 'none' }} alt="backgroundImage" />
+          <canvas
+            ref={(canvas) => { this.canvas = canvas; }}
+            width={GAME_CONSTANTS.GAME_BOARD.WIDTH}
+            height={GAME_CONSTANTS.GAME_BOARD.HEIGHT}
+            tabIndex="0"
+            onKeyDown={this.handleKeyDown}
+          />
+          <button type="button" onClick={this.leaveGame}>Leave this Game</button>
+        </div>
+        <Scoreboard scores={scores} />
       </div>
     );
   }
 }
 
 GameBoardComponent.propTypes = {
+  classes: PropTypes.shape().isRequired,
   // eslint-disable-next-line react/require-default-props
   location: PropTypes.shape({
     playerInfo: PropTypes.shape({
@@ -107,3 +126,5 @@ GameBoardComponent.propTypes = {
     }),
   }),
 };
+
+export default withStyles(styles)(GameBoardComponent);

@@ -2,7 +2,8 @@ import Snake from './snake';
 import SNAKE_CONSTANTS from './gameConstants';
 
 class Game {
-  constructor({ playerId, socket, io }) {
+  // eslint-disable-next-line object-curly-newline
+  constructor({ playerId, username, socket, io }) {
     this.roomId = (Math.random() * 100000000000).toFixed(0);
     this.createSocketEvents(playerId, socket);
     const initialProperties = {
@@ -11,7 +12,7 @@ class Game {
       color: 'red',
       length: SNAKE_CONSTANTS.INITIAL_LENGTH,
     };
-    this.firstSnake = new Snake(playerId, initialProperties, this);
+    this.firstSnake = new Snake(playerId, username, initialProperties, this);
     this.secondSnake = null;
     this.creator = playerId;
     this.freeToJoin = true;
@@ -20,7 +21,7 @@ class Game {
     this.io = io;
   }
 
-  joinGame({ playerId, socket }) {
+  joinGame({ playerId, username, socket }) {
     this.createSocketEvents(playerId, socket);
     const initialProperties = {
       head: { x: 100, y: 500 },
@@ -28,7 +29,7 @@ class Game {
       color: 'black',
       length: SNAKE_CONSTANTS.INITIAL_LENGTH,
     };
-    this.secondSnake = new Snake(playerId, initialProperties, this);
+    this.secondSnake = new Snake(playerId, username, initialProperties, this);
     this.firstSnake.rivalBody = this.secondSnake.bodyCoordinates;
     this.secondSnake.rivalBody = this.firstSnake.bodyCoordinates;
     this.freeToJoin = false;
@@ -57,7 +58,13 @@ class Game {
       this.setIntervalNumber(interval);
       this.startSnakeLives();
     };
-    setTimeout(prepareToPlay, 3000); // game will start in 3 second.
+    setTimeout(() => {
+      this.sendData('lifeChange', [
+        this.firstSnake.getScore(),
+        this.secondSnake.getScore(),
+      ]);
+      prepareToPlay();
+    }, 3000); // game will start in 3 second.
   }
 
   setIntervalNumber(number) {
@@ -69,10 +76,10 @@ class Game {
     const reduceSnakeLives = () => {
       this.firstSnake.life -= 1;
       this.secondSnake.life -= 1;
-      this.sendData('lifeChange', {
-        [this.firstSnake.ownerId]: this.firstSnake.life,
-        [this.secondSnake.ownerId]: this.secondSnake.life,
-      });
+      this.sendData('lifeChange', [
+        this.firstSnake.getScore(),
+        this.secondSnake.getScore(),
+      ]);
     };
     this.lifeInterval = setInterval(reduceSnakeLives, 1000);
   }
