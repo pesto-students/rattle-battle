@@ -12,6 +12,7 @@ describe('Test Snake Class', () => {
   };
   const game = {
     eatFood() { return false; },
+    stopGame() { return true; },
     rivalBody: [],
     gameInterval: 2,
   };

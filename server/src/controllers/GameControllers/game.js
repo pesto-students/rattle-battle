@@ -137,9 +137,10 @@ class Game {
     return this.secondSnake.changeDirection(info.key);
   }
 
-  stopGame() {
+  stopGame(gameInfo) {
     clearInterval(this.interval);
     clearInterval(this.lifeInterval);
+    this.sendData('gameResult', gameInfo);
   }
 }
 

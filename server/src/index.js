@@ -26,11 +26,13 @@ io.sockets.on('connection', (socket) => {
     socket.gameIndex = games.length - 1;
   });
 
-  socket.on('leaveGame', () => {
-    // console.log('Leaving game');
-    // @TODO:Make this player lose.
-    games[socket.gameIndex].stopGame();
-    games.splice(socket.gameIndex, 1);
+  socket.on('leaveGame', (userId) => {
+    console.log('Leaving game', userId);
+    const game = games[socket.gameIndex];
+    if (game && [game.firstSnake.ownerId, game.secondSnake.ownerId].includes(userId)) {
+      game.stopGame({ lostUserId: userId });
+      games.splice(socket.gameIndex, 1);
+    }
   });
 });
 
