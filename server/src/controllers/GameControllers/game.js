@@ -2,8 +2,7 @@ import Snake from './snake';
 import SNAKE_CONSTANTS from './gameConstants';
 
 class Game {
-  constructor(playerOneInfo) {
-    const { playerId, socket, io } = playerOneInfo;
+  constructor({ playerId, socket, io }) {
     this.roomId = (Math.random() * 100000000000).toFixed(0);
     this.createSocketEvents(playerId, socket);
     const initialProperties = {
@@ -14,14 +13,14 @@ class Game {
     };
     this.firstSnake = new Snake(playerId, initialProperties, this);
     this.secondSnake = null;
+    this.creator = playerId;
     this.freeToJoin = true;
     this.winner = null;
     this.ended = false;
     this.io = io;
   }
 
-  joinGame(playerTwoInfo) {
-    const { playerId, socket } = playerTwoInfo;
+  joinGame({ playerId, socket }) {
     this.createSocketEvents(playerId, socket);
     const initialProperties = {
       head: { x: 100, y: 500 },
@@ -43,22 +42,39 @@ class Game {
     socket.on('keyPress', this.changeDirection.bind(this));
   }
 
+  sendData(event, payload = {}) {
+    this.io.in(this.roomId).emit(event, payload);
+  }
+
   gameStart() {
-    this.io.in(this.roomId).emit('getReady', 'Get Ready to play');
+    this.sendData('getReady', 'Get Ready to play');
     const prepareToPlay = () => {
       const runFunction = () => {
-        this.io.in(this.roomId).emit('stepChange', this.moveSnakes());
+        this.sendData('stepChange', this.moveSnakes());
       };
-      const interval = setInterval(runFunction.bind(this), 30);
+      const interval = setInterval(runFunction, 30);
       this.interval = interval;
       this.setIntervalNumber(interval);
+      this.startSnakeLives();
     };
-    setTimeout(prepareToPlay.bind(this), 3000); // game will start in 3 second.
+    setTimeout(prepareToPlay, 3000); // game will start in 3 second.
   }
 
   setIntervalNumber(number) {
     this.firstSnake.interval = number;
     this.secondSnake.interval = number;
+  }
+
+  startSnakeLives() {
+    const reduceSnakeLives = () => {
+      this.firstSnake.life -= 1;
+      this.secondSnake.life -= 1;
+      this.sendData('lifeChange', {
+        [this.firstSnake.ownerId]: this.firstSnake.life,
+        [this.secondSnake.ownerId]: this.secondSnake.life,
+      });
+    };
+    this.lifeInterval = setInterval(reduceSnakeLives, 1000);
   }
 
   /**
@@ -108,14 +124,15 @@ class Game {
   }
 
   changeDirection(info) {
-    if (info.player === 0) {
+    if (info.player === this.creator) {
       return this.firstSnake.changeDirection(info.key);
     }
     return this.secondSnake.changeDirection(info.key);
   }
 
   stopGame() {
-    clearTimeout(this.interval);
+    clearInterval(this.interval);
+    clearInterval(this.lifeInterval);
   }
 }
 

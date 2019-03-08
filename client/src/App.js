@@ -52,7 +52,7 @@ class App extends Component {
         <Navbar />
         <Router>
           <div>
-            <Route exact path="/" component={Home} />
+            <Route exact path="/" render={props => <Home {...props} user={user} />} />
             <Route exact path="/game" component={GameBoardComponent} />
           </div>
         </Router>

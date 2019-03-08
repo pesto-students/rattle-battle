@@ -66,8 +66,9 @@ class Home extends Component {
   }
 
   playGame() {
+    const { user } = this.props;
     this.setState({ isLoading: true });
-    socket.emit('joinGame', 'nothing');
+    socket.emit('joinGame', user.id);
     socket.on('assignPlayerId', (playerId) => {
       // eslint-disable-next-line no-console
       console.log('playerId assigned: ', playerId);
@@ -94,6 +95,10 @@ class Home extends Component {
 }
 
 Home.propTypes = {
+  user: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    username: PropTypes.string.isRequired,
+  }).isRequired,
   classes: PropTypes.shape({
     button: PropTypes.string.isRequired,
     rightIcon: PropTypes.string.isRequired,

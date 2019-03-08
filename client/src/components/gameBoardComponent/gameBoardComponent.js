@@ -29,6 +29,8 @@ export default class GameBoardComponent extends Component {
       this.socket.on('stepChange', (game) => {
         this.stepChange(game);
       });
+      // eslint-disable-next-line no-console
+      this.socket.on('lifeChange', console.log);
     }
   }
 
@@ -98,10 +100,10 @@ export default class GameBoardComponent extends Component {
 
 GameBoardComponent.propTypes = {
   // eslint-disable-next-line react/require-default-props
-  location: {
+  location: PropTypes.shape({
     playerInfo: PropTypes.shape({
       playerId: PropTypes.string,
       socket: PropTypes.object,
     }),
-  },
+  }),
 };
