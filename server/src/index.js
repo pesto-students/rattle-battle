@@ -10,27 +10,30 @@ const server = app.listen(PORT, () => {
 });
 
 const io = socketIo(server);
-const games = [];
+const games = {};
+
 io.sockets.on('connection', (socket) => {
   socket.on('joinGame', ({ id: playerId, username }) => {
-    const lastGame = games[games.length - 1];
+    const openGame = Object.keys(games).find(game => game.freeToJoin === true);
+
     const playerInfo = { playerId, username, socket };
-    if (lastGame && lastGame.freeToJoin) {
-      lastGame.joinGame(playerInfo);
+    if (openGame) {
+      openGame.joinGame(playerInfo);
     } else {
       playerInfo.io = io;
       const newGame = new Game(playerInfo);
-      games.push(newGame);
+      games[newGame.roomId] = newGame;
     }
-    // eslint-disable-next-line no-param-reassign
-    socket.gameIndex = games.length - 1;
+    /* eslint-disable no-param-reassign */
+    socket.game = openGame;
   });
 
   socket.on('leaveGame', (userId) => {
-    const game = games[socket.gameIndex];
+    const { game } = socket;
     if (game) {
       game.stopGame({ lostUserId: userId });
-      games[socket.gameIndex] = undefined;
+      delete games[game.roomId];
+      socket.game = undefined;
     }
   });
 });
