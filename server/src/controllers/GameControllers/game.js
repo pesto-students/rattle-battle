@@ -19,6 +19,7 @@ class Game {
     this.winner = null;
     this.ended = false;
     this.io = io;
+    this.socket = socket;
   }
 
   joinGame({ playerId, username, socket }) {
@@ -141,6 +142,7 @@ class Game {
     clearInterval(this.interval);
     clearInterval(this.lifeInterval);
     this.sendData('gameResult', gameInfo);
+    this.socket.removeAllListeners('keyPress');
   }
 }
 

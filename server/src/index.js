@@ -13,29 +13,41 @@ const io = socketIo(server);
 const games = {};
 
 io.sockets.on('connection', (socket) => {
+  /* eslint-disable no-param-reassign */
+
   socket.on('joinGame', ({ id: playerId, username }) => {
-    const openGame = Object.keys(games).find(game => game.freeToJoin === true);
+    const allGames = Object.values(games);
+    const openGame = allGames.find(game => game.freeToJoin === true);
 
     const playerInfo = { playerId, username, socket };
     if (openGame) {
       openGame.joinGame(playerInfo);
+      socket.game = openGame;
     } else {
       playerInfo.io = io;
       const newGame = new Game(playerInfo);
       games[newGame.roomId] = newGame;
+      socket.game = newGame;
     }
-    /* eslint-disable no-param-reassign */
-    socket.game = openGame;
+    socket.userId = playerId;
   });
 
-  socket.on('leaveGame', (userId) => {
-    const { game } = socket;
-    if (game) {
-      game.stopGame({ lostUserId: userId });
+  const leaveGame = () => {
+    const { game, userId } = socket;
+    let lostUserId = userId;
+    if (game && games[game.roomId]) {
+      if (game.freeToJoin) {
+        // nobody lost
+        lostUserId = null;
+      }
+      game.stopGame({ lostUserId });
       delete games[game.roomId];
       socket.game = undefined;
     }
-  });
+  };
+
+  socket.on('leaveGame', leaveGame);
+  socket.on('disconnect', leaveGame);
 });
 
 export default server;

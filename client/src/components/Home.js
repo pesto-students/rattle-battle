@@ -51,6 +51,11 @@ class Home extends Component {
     });
   }
 
+  componentWillUnmount() {
+    socket.removeAllListeners('getReady');
+    socket.removeAllListeners('assignPlayerId');
+  }
+
   getCurrentView() {
     const { classes } = this.props;
     const { isLoading, loaderMessage, showLoginPrompt } = this.state;
