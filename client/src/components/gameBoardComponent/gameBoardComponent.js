@@ -50,6 +50,10 @@ class GameBoardComponent extends Component {
       return;
     }
 
+    this.setState({
+      playerId: playerInfo.playerId,
+    });
+
     this.img = document.getElementById('backgroundImage');
     this.ctx = this.canvas.getContext('2d');
     this.socket = playerInfo.socket;
