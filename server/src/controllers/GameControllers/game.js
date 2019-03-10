@@ -12,6 +12,7 @@ class Game {
       color: 'red',
       length: SNAKE_CONSTANTS.INITIAL_LENGTH,
     };
+    this.socketOne = socket;
     this.firstSnake = new Snake(playerId, username, initialProperties, this);
     this.secondSnake = null;
     this.creator = playerId;
@@ -29,6 +30,7 @@ class Game {
       color: 'blue',
       length: SNAKE_CONSTANTS.INITIAL_LENGTH,
     };
+    this.socketTwo = socket;
     this.secondSnake = new Snake(playerId, username, initialProperties, this);
     this.firstSnake.rivalBody = this.secondSnake.bodyCoordinates;
     this.secondSnake.rivalBody = this.firstSnake.bodyCoordinates;
@@ -48,7 +50,8 @@ class Game {
   }
 
   gameStart() {
-    this.sendData('getReady', 'Get Ready to play');
+    const snakeBodies = [this.firstSnake.bodyCoordinates, this.secondSnake.bodyCoordinates];
+    this.sendData('getReady', { info: 'Get Ready to play', snakeBodies });
     const prepareToPlay = () => {
       const runFunction = () => {
         this.sendData('stepChange', this.moveSnakes());
@@ -121,10 +124,12 @@ class Game {
   moveSnakes() {
     this.firstSnake.moveSnakeOneStep();
     this.secondSnake.moveSnakeOneStep();
+    const snakeOneNewCordi = this.firstSnake.bodyCoordinates.splice(this.firstSnake.bodyCoordinates.length - 3);
+    const snakeTwoNewCordi = this.secondSnake.bodyCoordinates.splice(this.secondSnake.bodyCoordinates.length - 3);
     return {
       snakeBodies: [
-        { color: this.firstSnake.color, body: this.firstSnake.bodyCoordinates },
-        { color: this.secondSnake.color, body: this.secondSnake.bodyCoordinates },
+        { color: this.firstSnake.color, body: snakeOneNewCordi },
+        { color: this.secondSnake.color, body: snakeTwoNewCordi },
       ],
       food: this.food,
     };
@@ -141,6 +146,8 @@ class Game {
     clearInterval(this.interval);
     clearInterval(this.lifeInterval);
     this.sendData('gameResult', gameInfo);
+    this.socketOne.disconnect('closingConnection');
+    this.socketTwo.disconnect('closingConnection');
   }
 }
 

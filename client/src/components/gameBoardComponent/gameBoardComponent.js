@@ -24,13 +24,15 @@ class GameBoardComponent extends Component {
     super(props);
     const { playerInfo } = props.location;
     if (playerInfo) {
-      const { playerId, socket } = playerInfo;
+      const { playerId, snakeBodies, socket } = playerInfo;
+      console.log('got player body', snakeBodies);
       this.state = {
         playerId,
         players: [],
       };
       this.leaveGame = this.leaveGame.bind(this);
       this.socket = socket;
+      this.snakeBodies = snakeBodies;
     } else {
       this.redirectToHome = true;
     }
@@ -46,7 +48,8 @@ class GameBoardComponent extends Component {
         this.stepChange(game);
       });
       this.socket.on('lifeChange', players => this.setState({ players }));
-      this.socket.on('gameResult', ({ lostUserId }) => {
+      this.socket.on('gameResult', ({ lostUserId, reason }) => {
+        console.log('game Result', reason);
         if (!this.result) {
           this.result = true;
           const { playerId } = this.state;
@@ -55,8 +58,8 @@ class GameBoardComponent extends Component {
           } else {
             alert('Your opponent lost, Now get a beer and Enjoy.');
           }
-          this.redirectToHome = true;
-          this.forceUpdate();
+          // this.redirectToHome = true;
+          // this.forceUpdate();
         }
       });
     }
@@ -89,11 +92,15 @@ class GameBoardComponent extends Component {
     ctx.arc(food.x, food.y, GAME_CONSTANTS.FOOD_RADIUS, 0, 2 * Math.PI);
     ctx.fill();
     ctx.closePath();
-    snakes.forEach((snake) => {
+    snakes.forEach((snake, index) => {
       const { color, body } = snake;
-      body.forEach((position) => {
+      const snakeLength = this.snakeBodies[index].length;
+      this.snakeBodies[index].slice(snakeLength - 3);
+      this.snakeBodies[index] = this.snakeBodies[index].concat(body);
+      this.snakeBodies[index].forEach((position) => {
         ctx.beginPath();
         ctx.fillStyle = color;
+        ctx.strokeStyle = color;
         ctx.arc(position.x, position.y, GAME_CONSTANTS.ARC_RADIUS, 0, 2 * Math.PI);
         ctx.fill();
         ctx.closePath();

@@ -42,9 +42,12 @@ class Home extends Component {
       console.log('Socket connection is set with back-end server.');
     });
 
-    socket.on('getReady', (message) => {
+    socket.on('getReady', (data) => {
       // eslint-disable-next-line no-console
-      console.log(message);
+      console.log(data);
+      const { snakeBodies } = data;
+      snakeBodies.forEach(ata => console.log(ata));
+      this.setState({ snakeBodies });
       const loaderMessage = 'Wooh! Found a player, get ready. you have 3 seconds...';
       this.setState({ loaderMessage });
       setTimeout(() => this.setState({ shouldRedirectToGame: true }), 2500);
@@ -96,8 +99,8 @@ class Home extends Component {
   }
 
   redirectToGame() {
-    const { playerId } = this.state;
-    return <Redirect to={{ pathname: '/game', playerInfo: { playerId, socket } }} />;
+    const { playerId, snakeBodies } = this.state;
+    return <Redirect to={{ pathname: '/game', playerInfo: { playerId, snakeBodies, socket } }} />;
   }
 
   render() {

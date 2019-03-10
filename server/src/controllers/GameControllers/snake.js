@@ -65,11 +65,14 @@ class Snake {
       this.getFoodReward();
       return true;
     }
-    if (this.hasCollidedWithItself()
-      || this.hasCollidedWithRival() || this.life <= 0) {
+    const hadCollisionWithItself = this.hasCollidedWithItself();
+    const hadCollisionWithRival = this.hasCollidedWithRival();
+    const hadNoLife = this.life <= 0;
+    if (hadCollisionWithItself || hadCollisionWithRival || hadNoLife) {
       this.lost = true;
       // @TODO: emit a game mechanics event for game lost;
-      this.stopGame({ lostUserId: this.ownerId });
+      const reason = { hadCollisionWithItself, hadCollisionWithRival, hadNoLife };
+      this.stopGame({ lostUserId: this.ownerId, reason });
       return false;
     }
     this.updateCoordinate();
@@ -198,11 +201,10 @@ class Snake {
   makeSmoothUTurn() {
     // @TODO:Refactor this code in future version,
     //  either user lodash or move it into some utility file.
-    this.moveSnakeOneStep();
-    this.moveSnakeOneStep();
-    this.moveSnakeOneStep();
-    this.moveSnakeOneStep();
-    this.moveSnakeOneStep();
+    this.head = this.getHeadTip();
+    this.updateCoordinate();
+    this.head = this.getHeadTip();
+    this.updateCoordinate();
   }
 
   getProfile() {
