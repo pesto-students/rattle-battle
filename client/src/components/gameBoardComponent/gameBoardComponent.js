@@ -18,54 +18,63 @@ const styles = () => ({
     margin: 'auto',
   },
 });
+
 /* eslint-disable no-alert */
 class GameBoardComponent extends Component {
   constructor(props) {
     super(props);
-    const { playerInfo } = props.location;
-    if (playerInfo) {
-      const { playerId, socket } = playerInfo;
-      this.state = {
-        playerId,
-        players: [],
-      };
-      this.leaveGame = this.leaveGame.bind(this);
-      this.socket = socket;
-    } else {
-      this.redirectToHome = true;
-    }
-    this.result = false;
-    this.hasLeftGame = false;
+
+    this.state = {
+      playerId: null,
+      players: [],
+      redirectToHome: false,
+    };
+
+    this.leaveGame = this.leaveGame.bind(this);
   }
 
   componentDidMount() {
-    if (!this.redirectToHome) {
-      this.img = document.getElementById('backgroundImage');
-      this.ctx = this.canvas.getContext('2d');
-      this.socket.on('stepChange', (game) => {
-        this.stepChange(game);
-      });
-      this.socket.on('lifeChange', players => this.setState({ players }));
-      this.socket.on('gameResult', ({ lostUserId }) => {
-        if (!this.result) {
-          this.result = true;
-          const { playerId } = this.state;
-          if (lostUserId === playerId) {
-            alert('You Lost, Now go home and cry in front of your mommy.');
-          } else {
-            alert('Your opponent lost, Now get a beer and Enjoy.');
-          }
-          this.redirectToHome = true;
-          this.forceUpdate();
-        }
-      });
+    const { redirectToHome } = this.state;
+
+    if (redirectToHome) {
+      return;
     }
-    window.addEventListener('beforeunload', this.leaveGame);
+
+    /* eslint-disable react/destructuring-assignment */
+    const { playerInfo } = this.props.location;
+
+    if (!playerInfo) {
+      this.setState({
+        redirectToHome: true,
+      });
+      return;
+    }
+
+    this.img = document.getElementById('backgroundImage');
+    this.ctx = this.canvas.getContext('2d');
+    this.socket = playerInfo.socket;
+
+    this.socket.on('stepChange', game => this.stepChange(game));
+    this.socket.on('lifeChange', players => this.setState({ players }));
+    this.socket.on('gameResult', result => this.handleGameEnded(result));
   }
 
   componentWillUnmount() {
-    window.removeEventListener('beforeunload', this.leaveGame);
+    this.socket.removeAllListeners('stepChange');
+    this.socket.removeAllListeners('lifeChange');
+    this.socket.removeAllListeners('gameResult');
   }
+
+  handleGameEnded = ({ lostUserId }) => {
+    const { playerId } = this.props.location.playerInfo;
+    this.setState({ redirectToHome: true }, () => {
+      if (lostUserId === playerId) {
+        alert('You Lost, Now go home and cry in front of your mommy.');
+      } else {
+        alert('Your opponent lost, Now get a beer and Enjoy.');
+      }
+    });
+  };
 
   handleKeyDown = (event) => {
     const { key } = event;
@@ -76,12 +85,44 @@ class GameBoardComponent extends Component {
     }
   };
 
+  drawSnake = (snake) => {
+    const { ctx } = this;
+    const { color, body } = snake;
+    body.forEach((position) => {
+      ctx.beginPath();
+      ctx.fillStyle = color;
+      ctx.arc(position.x, position.y, GAME_CONSTANTS.ARC_RADIUS, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.closePath();
+    });
+  };
+
+  clearCanvasForRedrawing = () => {
+    this.ctx.drawImage(
+      this.img,
+      0,
+      0,
+      GAME_CONSTANTS.GAME_BOARD.WIDTH,
+      GAME_CONSTANTS.GAME_BOARD.HEIGHT,
+    );
+  };
+
+  loadBackgroundImage = () => (
+    <img
+      src={backgroundImage}
+      id="backgroundImage"
+      style={{ display: 'none' }}
+      alt="backgroundImage"
+    />
+  );
+
   stepChange(game) {
     const snakes = game.snakeBodies;
     const { food } = game;
     const { ctx } = this;
-    this.ctx.drawImage(this.img, 0, 0,
-      GAME_CONSTANTS.GAME_BOARD.WIDTH, GAME_CONSTANTS.GAME_BOARD.HEIGHT);
+
+    this.clearCanvasForRedrawing();
+
     // TODO: Implement something that snake moves like a real snake, crawling.
     ctx.beginPath();
     ctx.fillStyle = GAME_CONSTANTS.FOOD_COLOR;
@@ -89,49 +130,38 @@ class GameBoardComponent extends Component {
     ctx.arc(food.x, food.y, GAME_CONSTANTS.FOOD_RADIUS, 0, 2 * Math.PI);
     ctx.fill();
     ctx.closePath();
-    snakes.forEach((snake) => {
-      const { color, body } = snake;
-      body.forEach((position) => {
-        ctx.beginPath();
-        ctx.fillStyle = color;
-        ctx.arc(position.x, position.y, GAME_CONSTANTS.ARC_RADIUS, 0, 2 * Math.PI);
-        ctx.fill();
-        ctx.closePath();
-      });
-    });
+    snakes.forEach(this.drawSnake);
   }
 
   /**
    * Emits a event that current user has left the game.
    */
   leaveGame() {
-    if (!this.hasLeftGame) {
-      this.hasLeftGame = true;
-      const { playerId } = this.state;
-      this.socket.emit('leaveGame', playerId);
-    }
+    this.socket.emit('leaveGame');
   }
 
   render() {
-    if (this.redirectToHome) {
-      // if user comes directly to game board url, without request a game play,--
-      // -- will redirect to home page, where he/she/they can request to a new game play
+    const { redirectToHome, playerId, players } = this.state;
+
+    if (redirectToHome) {
       return <Redirect to={{ pathname: '/' }} />;
     }
-    const { playerId, players } = this.state;
+
     const { classes } = this.props;
     return (
       <div className={classes.playArea}>
         <div className={classes.boardContainer}>
-          <img src={backgroundImage} id="backgroundImage" style={{ display: 'none' }} alt="backgroundImage" />
+          {this.loadBackgroundImage()}
           <canvas
-            ref={(canvas) => { this.canvas = canvas; }}
+            ref={canvas => (this.canvas = canvas)} // eslint-disable-line no-return-assign
             width={GAME_CONSTANTS.GAME_BOARD.WIDTH}
             height={GAME_CONSTANTS.GAME_BOARD.HEIGHT}
             tabIndex="0"
             onKeyDown={this.handleKeyDown}
           />
-          <button type="button" onClick={this.leaveGame}>Leave this Game</button>
+          <button type="button" onClick={this.leaveGame}>
+            Leave this Game
+          </button>
         </div>
         <Scoreboard players={players} playerId={playerId} />
       </div>
